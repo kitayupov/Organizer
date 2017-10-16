@@ -3,11 +3,14 @@ package com.vudn.kit.organizer;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,6 +18,7 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.OvershootInterpolator;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -201,9 +205,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
         selectedNotes = new ArrayList<>();
-        deleteButton.show();
+        setButtonsStateStarted();
         actionMode = mode;
         return true;
+    }
+
+    private void setButtonsStateStarted() {
+        changeInsertButtonForward();
+        deleteButton.show();
+    }
+
+    private void changeInsertButtonForward() {
+        rotateInsertButton(45.0F);
+        changeInsertButtonColor(R.color.colorCancel);
+    }
+
+    private void rotateInsertButton(float value) {
+        ViewCompat.animate(insertButton)
+                .rotation(value)
+                .withLayer()
+                .setDuration(500L)
+                .setInterpolator(new OvershootInterpolator())
+                .start();
+    }
+
+    private void changeInsertButtonColor(int color) {
+        insertButton.setBackgroundTintList(
+                ColorStateList.valueOf(ContextCompat.getColor(this, color)));
     }
 
     @Override
@@ -219,15 +247,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onDestroyActionMode(ActionMode mode) {
         selectedNotes = null;
-        deleteButton.hide();
+        setButtonsStateFinished();
         actionMode = null;
+    }
+
+    private void setButtonsStateFinished() {
+        changeInsertButtonBackward();
+        deleteButton.hide();
+    }
+
+    private void changeInsertButtonBackward() {
+        rotateInsertButton(0.0F);
+        changeInsertButtonColor(R.color.colorAccent);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.insert_fab:
-                startActivityForResult(new Intent(this, EditorActivity.class), REQUEST_CODE);
+                if (actionMode == null) {
+                    startActivityForResult(new Intent(this, EditorActivity.class), REQUEST_CODE);
+                }
                 releaseActionMode();
                 break;
             case R.id.delete_fab:

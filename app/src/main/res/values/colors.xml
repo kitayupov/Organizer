@@ -5,4 +5,5 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorItemDefault">#E8EAF6</color>
     <color name="colorItemSelected">#8C9EFF</color>
+    <color name="colorCancel">#757575</color>
 </resources>
