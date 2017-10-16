@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -21,7 +20,8 @@ import com.vudn.kit.organizer.note.NoteDBHelper;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class MainActivity extends AppCompatActivity
+        implements AdapterView.OnItemClickListener, View.OnClickListener {
 
     public static final String POSITION = "position";
     public static final int REQUEST_CODE = 200;
@@ -29,33 +29,37 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private ArrayList<Note> arrayList;
     private NoteAdapter noteAdapter;
     private NoteDBHelper dbHelper;
-    private ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivityForResult(new Intent(getApplicationContext(), EditorActivity.class), REQUEST_CODE);
-            }
-        });
-
-        initControls();
+        initToolbar();
+        initNoteList();
+        initListView();
+        setClickListeners();
         readDatabase();
     }
 
-    private void initControls() {
+    private void initToolbar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+    }
+
+    private void initNoteList() {
         arrayList = new ArrayList<>();
         noteAdapter = new NoteAdapter(arrayList);
-        listView = (ListView) findViewById(R.id.listView);
+    }
+
+    private void initListView() {
+        final ListView listView = (ListView) findViewById(R.id.listView);
         listView.setAdapter(noteAdapter);
         listView.setOnItemClickListener(this);
+    }
+
+    private void setClickListeners() {
+        findViewById(R.id.fab).setOnClickListener(this);
     }
 
     private void readDatabase() {
@@ -138,5 +142,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         intent.putExtra(POSITION, position);
         intent.putExtra(Note.class.getCanonicalName(), noteAdapter.getItem(position));
         startActivityForResult(intent, REQUEST_CODE);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.fab:
+                startActivityForResult(new Intent(this, EditorActivity.class), REQUEST_CODE);
+                break;
+            default:
+        }
     }
 }
