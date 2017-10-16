@@ -143,6 +143,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         values.put(NoteDBHelper.BODY, note.getBody());
         values.put(NoteDBHelper.TIME_CREATED, note.getTimeCreated());
         values.put(NoteDBHelper.TIME_UPDATED, note.getTimeUpdated());
+        values.put(NoteDBHelper.COMPLETED, note.isCompleted() ? 1 : 0);
         if (position == arrayList.size()) {
             insertNote(note, database, values);
         } else {
@@ -165,7 +166,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @NonNull
     private String[] getWhereArgs(Note note) {
-        return new String[]{note.getBody(), String.valueOf(note.getTimeCreated()), String.valueOf(note.getTimeUpdated())};
+        return new String[]{note.getBody(), String.valueOf(note.getTimeCreated()),
+                String.valueOf(note.getTimeUpdated()), String.valueOf(note.isCompleted() ? 1 : 0)};
     }
 
     @Override
