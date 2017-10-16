@@ -2,6 +2,7 @@ package com.vudn.kit.organizer;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -18,11 +19,17 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
 
-        bodyEditText = (TextInputEditText) findViewById(R.id.textInputEditText);
-
-        findViewById(R.id.fab).setOnClickListener(this);
-
+        initControls();
+        setClickListeners();
         getIntentData();
+    }
+
+    private void initControls() {
+        bodyEditText = (TextInputEditText) findViewById(R.id.textInputEditText);
+    }
+
+    private void setClickListeners() {
+        findViewById(R.id.fab).setOnClickListener(this);
     }
 
     private void getIntentData() {
@@ -43,12 +50,16 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void sendResult() {
-        final String body = bodyEditText.getText().toString();
-        final Note note = new Note(body);
         final Intent intent = new Intent();
         intent.putExtra(MainActivity.POSITION, position);
-        intent.putExtra(Note.class.getCanonicalName(), note);
+        intent.putExtra(Note.class.getCanonicalName(), getNote());
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    @NonNull
+    private Note getNote() {
+        final String body = bodyEditText.getText().toString();
+        return new Note(body);
     }
 }
