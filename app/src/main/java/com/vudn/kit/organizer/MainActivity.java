@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final int REQUEST_CODE = 200;
 
     private ArrayList<Note> arrayList;
+    private ArrayList<Note> selectedNotes;
     private NoteAdapter noteAdapter;
     private NoteDBHelper dbHelper;
     private ListView listView;
@@ -164,13 +165,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-        mode.setTitle(String.valueOf(listView.getCheckedItemCount()));
+        insertOrRemoveItem(position, checked);
+        updateSelectedItemsCount(mode);
+    }
+
+    private void insertOrRemoveItem(int position, boolean checked) {
+        final Note note = noteAdapter.getItem(position);
+        if (checked) {
+            selectedNotes.add(note);
+        } else {
+            selectedNotes.remove(note);
+        }
+    }
+
+    private void updateSelectedItemsCount(ActionMode mode) {
+        final int count = listView.getCheckedItemCount();
+        mode.setTitle(String.valueOf(count));
     }
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        actionMode = mode;
+        selectedNotes = new ArrayList<>();
         deleteButton.show();
+        actionMode = mode;
         return true;
     }
 
@@ -186,7 +203,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
+        selectedNotes = null;
         deleteButton.hide();
+        actionMode = null;
     }
 
     @Override
