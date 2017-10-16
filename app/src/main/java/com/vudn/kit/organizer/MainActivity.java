@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -20,8 +22,8 @@ import com.vudn.kit.organizer.note.NoteDBHelper;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity
-        implements AdapterView.OnItemClickListener, View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,
+        AdapterView.OnItemClickListener, AbsListView.MultiChoiceModeListener {
 
     public static final String POSITION = "position";
     public static final int DEFAULT_POSITION = -1;
@@ -30,6 +32,7 @@ public class MainActivity extends AppCompatActivity
     private ArrayList<Note> arrayList;
     private NoteAdapter noteAdapter;
     private NoteDBHelper dbHelper;
+    private ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +57,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void initListView() {
-        final ListView listView = (ListView) findViewById(R.id.listView);
+        listView = (ListView) findViewById(R.id.listView);
         listView.setAdapter(noteAdapter);
         listView.setOnItemClickListener(this);
+        listView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
+        listView.setMultiChoiceModeListener(this);
     }
 
     private void setClickListeners() {
@@ -153,5 +158,30 @@ public class MainActivity extends AppCompatActivity
                 break;
             default:
         }
+    }
+
+    @Override
+    public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+        mode.setTitle(String.valueOf(listView.getCheckedItemCount()));
+    }
+
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        return false;
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+
     }
 }
