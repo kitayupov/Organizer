@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -97,34 +98,38 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_CODE) {
-                insertNote(data);
-            }
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE && data != null) {
+            getNote(data);
         }
     }
 
-    private void insertNote(Intent data) {
-        if (data != null) {
-            int position = data.getIntExtra(POSITION, -1);
-            position = (position >= 0 && position < arrayList.size()) ? position : arrayList.size();
-            final Note note = data.getParcelableExtra(Note.class.getCanonicalName());
-            final SQLiteDatabase database = dbHelper.getWritableDatabase();
-            final ContentValues values = new ContentValues();
-            values.put(NoteDBHelper.BODY, note.getBody());
-            if (position == arrayList.size()) {
-                database.insert(NoteDBHelper.TABLE_NAME, null, values);
-                arrayList.add(note);
-            } else {
-                final String whereClause = NoteDBHelper.BODY + "=?";
-                final Note oldNote = arrayList.get(position);
-                final String[] whereArgs = new String[]{oldNote.getBody()};
-                database.update(NoteDBHelper.TABLE_NAME, values, whereClause, whereArgs);
-                arrayList.remove(oldNote);
-                arrayList.add(position, note);
-            }
-            noteAdapter.notifyDataSetChanged();
+    private void getNote(@NonNull Intent data) {
+        int position = data.getIntExtra(POSITION, -1);
+        position = (position >= 0 && position < arrayList.size()) ? position : arrayList.size();
+        final Note note = data.getParcelableExtra(Note.class.getCanonicalName());
+        final SQLiteDatabase database = dbHelper.getWritableDatabase();
+        final ContentValues values = new ContentValues();
+        values.put(NoteDBHelper.BODY, note.getBody());
+        if (position == arrayList.size()) {
+            insertNote(note, database, values);
+        } else {
+            updateNote(position, note, database, values);
         }
+        noteAdapter.notifyDataSetChanged();
+    }
+
+    private void insertNote(Note note, SQLiteDatabase database, ContentValues values) {
+        database.insert(NoteDBHelper.TABLE_NAME, null, values);
+        arrayList.add(note);
+    }
+
+    private void updateNote(int position, Note note, SQLiteDatabase database, ContentValues values) {
+        final String whereClause = NoteDBHelper.BODY + "=?";
+        final Note oldNote = arrayList.get(position);
+        final String[] whereArgs = new String[]{oldNote.getBody()};
+        database.update(NoteDBHelper.TABLE_NAME, values, whereClause, whereArgs);
+        arrayList.remove(oldNote);
+        arrayList.add(position, note);
     }
 
     @Override
