@@ -103,8 +103,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void insertNote(Intent data) {
         if (data != null) {
-            final String body = data.getStringExtra(NoteDBHelper.BODY);
-            final Note note = new Note(body);
+            final Note note = data.getParcelableExtra(Note.class.getCanonicalName());
             final SQLiteDatabase database = dbHelper.getWritableDatabase();
             ContentValues values = new ContentValues();
             values.put(NoteDBHelper.BODY, note.getBody());

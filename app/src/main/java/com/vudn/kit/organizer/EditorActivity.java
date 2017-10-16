@@ -6,7 +6,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
-import com.vudn.kit.organizer.note.NoteDBHelper;
+import com.vudn.kit.organizer.note.Note;
 
 public class EditorActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -32,8 +32,10 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void sendResult() {
+        final String body = bodyEditText.getText().toString();
+        final Note note = new Note(body);
         final Intent intent = new Intent();
-        intent.putExtra(NoteDBHelper.BODY, bodyEditText.getText().toString());
+        intent.putExtra(Note.class.getCanonicalName(), note);
         setResult(RESULT_OK, intent);
         finish();
     }
