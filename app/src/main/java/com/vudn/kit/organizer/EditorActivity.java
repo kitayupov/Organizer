@@ -66,6 +66,6 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     @NonNull
     private Note getNote() {
         final String body = bodyEditText.getText().toString();
-        return new Note(body, timeCreated, new Date().getTime());
+        return new Note(body, timeCreated, new Date().getTime(), false);
     }
 }

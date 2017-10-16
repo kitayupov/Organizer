@@ -8,17 +8,20 @@ public class Note implements Parcelable {
     private String body;
     private long timeCreated;
     private long timeUpdated;
+    private boolean isCompleted;
 
-    public Note(String body, long timeCreated, long timeUpdated) {
+    public Note(String body, long timeCreated, long timeUpdated, boolean isCompleted) {
         this.body = body;
         this.timeCreated = timeCreated;
         this.timeUpdated = timeUpdated;
+        this.isCompleted = isCompleted;
     }
 
     private Note(Parcel in) {
         body = in.readString();
         timeCreated = in.readLong();
         timeUpdated = in.readLong();
+        isCompleted = in.readInt() == 1;
     }
 
     public static final Creator<Note> CREATOR = new Creator<Note>() {
@@ -45,12 +48,17 @@ public class Note implements Parcelable {
         return timeUpdated;
     }
 
+    public boolean isCompleted() {
+        return isCompleted;
+    }
+
     @Override
     public String toString() {
         return "Note{" +
                 "body='" + body + '\'' +
                 ", timeCreated=" + timeCreated +
                 ", timeUpdated=" + timeUpdated +
+                ", isCompleted=" + isCompleted +
                 '}';
     }
 
@@ -64,5 +72,6 @@ public class Note implements Parcelable {
         dest.writeString(body);
         dest.writeLong(timeCreated);
         dest.writeLong(timeUpdated);
+        dest.writeInt(isCompleted ? 1 : 0);
     }
 }

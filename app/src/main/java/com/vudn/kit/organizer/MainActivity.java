@@ -91,11 +91,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             final int bodyIndex = cursor.getColumnIndex(NoteDBHelper.BODY);
             final int createdIndex = cursor.getColumnIndex(NoteDBHelper.TIME_CREATED);
             final int updatedIndex = cursor.getColumnIndex(NoteDBHelper.TIME_UPDATED);
+            final int completedIndex = cursor.getColumnIndex(NoteDBHelper.COMPLETED);
             do {
                 final String body = cursor.getString(bodyIndex);
                 final long timeCreated = cursor.getLong(createdIndex);
                 final long timeUpdated = cursor.getLong(updatedIndex);
-                final Note note = new Note(body, timeCreated, timeUpdated);
+                final boolean completed = cursor.getInt(completedIndex) == 1;
+                final Note note = new Note(body, timeCreated, timeUpdated, completed);
                 arrayList.add(note);
             } while (cursor.moveToNext());
         }
