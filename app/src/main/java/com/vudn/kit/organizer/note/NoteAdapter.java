@@ -1,5 +1,6 @@
 package com.vudn.kit.organizer.note;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +44,9 @@ public class NoteAdapter extends BaseAdapter {
 
     private View noteView(View view, int position) {
         final Note item = getItem(position);
-        ((TextView) view.findViewById(R.id.textView)).setText(item.getBody());
+        final TextView textView = view.findViewById(R.id.textView);
+        textView.setText(item.getBody());
+        textView.setTextColor(item.isCompleted() ? Color.LTGRAY : Color.DKGRAY);
         return view;
     }
 }
