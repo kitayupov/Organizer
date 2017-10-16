@@ -5,14 +5,20 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
+import java.util.Date;
+
 public class NoteDBHelper extends SQLiteOpenHelper {
 
     public static final String TABLE_NAME = "Notes";
     public static final String BODY = "body";
-    public static final String WHERE_CLAUSE = NoteDBHelper.BODY + "=?";
+    public static final String TIME_CREATED = "timeCreated";
+    public static final String TIME_UPDATED = "timeUpdated";
+
+    public static final String WHERE_CLAUSE =
+            BODY + "=? and " + TIME_CREATED + "=? and " + TIME_UPDATED + "=?";
 
     private static final String NOTES_DB = "notes.db";
-    private static final int VERSION = 1;
+    private static final int VERSION = 2;
 
     public NoteDBHelper(Context context) {
         this(context, NOTES_DB, null, VERSION);
@@ -29,15 +35,25 @@ public class NoteDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(String.format("drop table if exists %s", TABLE_NAME));
-        onCreate(db);
+        if (oldVersion == 1 && newVersion == 2) {
+            db.execSQL(
+                    String.format(
+                            "alter table %s add column %s numeric default %d",
+                            TABLE_NAME, TIME_CREATED, new Date().getTime())
+            );
+            db.execSQL(
+                    String.format(
+                            "alter table %s add column %s numeric default %d",
+                            TABLE_NAME, TIME_UPDATED, new Date().getTime())
+            );
+        }
     }
 
     private static class NotesTable implements BaseColumns {
         static final String CREATE_QUERY =
                 String.format(
-                        "create table %s (%s integer primary key autoincrement, %s text)",
-                        TABLE_NAME, _ID, BODY
+                        "create table %s (%s integer primary key autoincrement, %s text, %s numeric, %s numeric)",
+                        TABLE_NAME, _ID, BODY, TIME_CREATED, TIME_UPDATED
                 );
     }
 }

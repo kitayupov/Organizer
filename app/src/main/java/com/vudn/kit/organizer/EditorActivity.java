@@ -9,10 +9,13 @@ import android.view.View;
 
 import com.vudn.kit.organizer.note.Note;
 
+import java.util.Date;
+
 public class EditorActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextInputEditText bodyEditText;
     private int position;
+    private long timeCreated;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,9 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         final Note note = getIntent().getParcelableExtra(Note.class.getCanonicalName());
         if (note != null) {
             bodyEditText.setText(note.getBody());
+            timeCreated = note.getTimeCreated();
+        } else {
+            timeCreated = new Date().getTime();
         }
     }
 
@@ -60,6 +66,6 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     @NonNull
     private Note getNote() {
         final String body = bodyEditText.getText().toString();
-        return new Note(body);
+        return new Note(body, timeCreated, new Date().getTime());
     }
 }

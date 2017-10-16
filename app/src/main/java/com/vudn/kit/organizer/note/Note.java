@@ -6,17 +6,19 @@ import android.os.Parcelable;
 public class Note implements Parcelable {
 
     private String body;
+    private long timeCreated;
+    private long timeUpdated;
 
-    public Note() {
-        body = "";
-    }
-
-    public Note(String body) {
+    public Note(String body, long timeCreated, long timeUpdated) {
         this.body = body;
+        this.timeCreated = timeCreated;
+        this.timeUpdated = timeUpdated;
     }
 
     private Note(Parcel in) {
         body = in.readString();
+        timeCreated = in.readLong();
+        timeUpdated = in.readLong();
     }
 
     public static final Creator<Note> CREATOR = new Creator<Note>() {
@@ -35,14 +37,20 @@ public class Note implements Parcelable {
         return body;
     }
 
-    public void setBody(String body) {
-        this.body = body;
+    public long getTimeCreated() {
+        return timeCreated;
+    }
+
+    public long getTimeUpdated() {
+        return timeUpdated;
     }
 
     @Override
     public String toString() {
         return "Note{" +
                 "body='" + body + '\'' +
+                ", timeCreated=" + timeCreated +
+                ", timeUpdated=" + timeUpdated +
                 '}';
     }
 
@@ -54,5 +62,7 @@ public class Note implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(body);
+        dest.writeLong(timeCreated);
+        dest.writeLong(timeUpdated);
     }
 }

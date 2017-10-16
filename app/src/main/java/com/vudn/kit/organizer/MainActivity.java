@@ -89,9 +89,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final Cursor cursor = database.query(NoteDBHelper.TABLE_NAME, null, null, null, null, null, null);
         if (cursor.moveToFirst()) {
             final int bodyIndex = cursor.getColumnIndex(NoteDBHelper.BODY);
+            final int createdIndex = cursor.getColumnIndex(NoteDBHelper.TIME_CREATED);
+            final int updatedIndex = cursor.getColumnIndex(NoteDBHelper.TIME_UPDATED);
             do {
                 final String body = cursor.getString(bodyIndex);
-                final Note note = new Note(body);
+                final long timeCreated = cursor.getLong(createdIndex);
+                final long timeUpdated = cursor.getLong(updatedIndex);
+                final Note note = new Note(body, timeCreated, timeUpdated);
                 arrayList.add(note);
             } while (cursor.moveToNext());
         }
@@ -135,6 +139,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
         final ContentValues values = new ContentValues();
         values.put(NoteDBHelper.BODY, note.getBody());
+        values.put(NoteDBHelper.TIME_CREATED, note.getTimeCreated());
+        values.put(NoteDBHelper.TIME_UPDATED, note.getTimeUpdated());
         if (position == arrayList.size()) {
             insertNote(note, database, values);
         } else {
@@ -157,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @NonNull
     private String[] getWhereArgs(Note note) {
-        return new String[]{note.getBody()};
+        return new String[]{note.getBody(), String.valueOf(note.getTimeCreated()), String.valueOf(note.getTimeUpdated())};
     }
 
     @Override
