@@ -1,5 +1,7 @@
 package com.vudn.kit.organizer;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -12,6 +14,7 @@ import android.widget.ListView;
 
 import com.vudn.kit.organizer.note.Note;
 import com.vudn.kit.organizer.note.NoteAdapter;
+import com.vudn.kit.organizer.note.NoteDBHelper;
 
 import java.util.ArrayList;
 
@@ -38,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         initControls();
+        readDatabase();
     }
 
     private void initControls() {
@@ -45,6 +49,21 @@ public class MainActivity extends AppCompatActivity {
         noteAdapter = new NoteAdapter(arrayList);
         listView = (ListView) findViewById(R.id.listView);
         listView.setAdapter(noteAdapter);
+    }
+
+    private void readDatabase() {
+        final NoteDBHelper dbHelper = new NoteDBHelper(this);
+        final SQLiteDatabase database = dbHelper.getReadableDatabase();
+        final Cursor cursor = database.query(NoteDBHelper.TABLE_NAME, null, null, null, null, null, null);
+        if (cursor.moveToFirst()) {
+            final int bodyIndex = cursor.getColumnIndex(NoteDBHelper.BODY);
+            do {
+                final String body = cursor.getString(bodyIndex);
+                final Note note = new Note(body);
+                arrayList.add(note);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
     }
 
     @Override
