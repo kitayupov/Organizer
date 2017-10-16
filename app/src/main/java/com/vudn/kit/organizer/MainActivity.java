@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setClickListeners() {
-        findViewById(R.id.fab).setOnClickListener(this);
+        findViewById(R.id.insert_fab).setOnClickListener(this);
     }
 
     private void readDatabase() {
@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.fab:
+            case R.id.insert_fab:
                 startActivityForResult(new Intent(this, EditorActivity.class), REQUEST_CODE);
                 break;
             default:
