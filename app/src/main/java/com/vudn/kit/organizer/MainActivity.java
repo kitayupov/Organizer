@@ -1,11 +1,11 @@
 package com.vudn.kit.organizer;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -21,9 +21,12 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final int REQUEST_CODE = 200;
+
     private ListView listView;
     private ArrayList<Note> arrayList;
     private NoteAdapter noteAdapter;
+    private NoteDBHelper dbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(), EditorActivity.class));
+                startActivityForResult(new Intent(getApplicationContext(), EditorActivity.class), REQUEST_CODE);
             }
         });
 
@@ -52,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void readDatabase() {
-        final NoteDBHelper dbHelper = new NoteDBHelper(this);
+        dbHelper = new NoteDBHelper(this);
         final SQLiteDatabase database = dbHelper.getReadableDatabase();
         final Cursor cursor = database.query(NoteDBHelper.TABLE_NAME, null, null, null, null, null, null);
         if (cursor.moveToFirst()) {
@@ -86,5 +89,28 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_CODE) {
+                insertNote(data);
+            }
+        }
+    }
+
+    private void insertNote(Intent data) {
+        if (data != null) {
+            final String body = data.getStringExtra(NoteDBHelper.BODY);
+            final Note note = new Note(body);
+            final SQLiteDatabase database = dbHelper.getWritableDatabase();
+            ContentValues values = new ContentValues();
+            values.put(NoteDBHelper.BODY, note.getBody());
+            database.insert(NoteDBHelper.TABLE_NAME, null, values);
+            arrayList.add(note);
+            noteAdapter.notifyDataSetChanged();
+        }
     }
 }
