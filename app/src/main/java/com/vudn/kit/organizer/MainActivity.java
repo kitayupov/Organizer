@@ -1,12 +1,14 @@
 package com.vudn.kit.organizer;
 
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.ActionMode;
@@ -219,11 +221,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 releaseActionMode();
                 break;
             case R.id.delete_fab:
-                deleteSelectedNotes();
-                releaseActionMode();
+                showDeleteAlertDialog();
                 break;
             default:
         }
+    }
+
+    private void showDeleteAlertDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_delete_title)
+                .setMessage(R.string.dialog_delete_message)
+                .setPositiveButton(R.string.button_yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteSelectedNotes();
+                        releaseActionMode();
+                    }
+                })
+                .setNegativeButton(R.string.button_no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        releaseActionMode();
+                    }
+                })
+                .create()
+                .show();
     }
 
     private void deleteSelectedNotes() {
