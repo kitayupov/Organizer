@@ -7,11 +7,12 @@ import android.provider.BaseColumns;
 
 public class NoteDBHelper extends SQLiteOpenHelper {
 
-    public static final String BODY = "body";
-
-    public static final String NOTES_DB = "notes.db";
     public static final String TABLE_NAME = "Notes";
-    public static final int VERSION = 1;
+    public static final String BODY = "body";
+    public static final String WHERE_CLAUSE = NoteDBHelper.BODY + "=?";
+
+    private static final String NOTES_DB = "notes.db";
+    private static final int VERSION = 1;
 
     public NoteDBHelper(Context context) {
         this(context, NOTES_DB, null, VERSION);

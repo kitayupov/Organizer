@@ -147,12 +147,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void updateNote(int position, Note note, SQLiteDatabase database, ContentValues values) {
-        final String whereClause = NoteDBHelper.BODY + "=?";
         final Note oldNote = arrayList.get(position);
-        final String[] whereArgs = new String[]{oldNote.getBody()};
-        database.update(NoteDBHelper.TABLE_NAME, values, whereClause, whereArgs);
+        database.update(NoteDBHelper.TABLE_NAME, values, NoteDBHelper.WHERE_CLAUSE, getWhereArgs(oldNote));
         arrayList.remove(oldNote);
         arrayList.add(position, note);
+    }
+
+    @NonNull
+    private String[] getWhereArgs(Note note) {
+        return new String[]{note.getBody()};
     }
 
     @Override
@@ -216,10 +219,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 releaseActionMode();
                 break;
             case R.id.delete_fab:
+                deleteSelectedNotes();
                 releaseActionMode();
                 break;
             default:
         }
+    }
+
+    private void deleteSelectedNotes() {
+        final SQLiteDatabase database = dbHelper.getWritableDatabase();
+        for (Note note : selectedNotes) {
+            database.delete(NoteDBHelper.TABLE_NAME, NoteDBHelper.WHERE_CLAUSE, getWhereArgs(note));
+            arrayList.remove(note);
+        }
+        noteAdapter.notifyDataSetChanged();
     }
 
     private void releaseActionMode() {
