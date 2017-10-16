@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.ActionMode;
@@ -34,6 +35,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private NoteDBHelper dbHelper;
     private ListView listView;
 
+    private FloatingActionButton insertButton;
+    private FloatingActionButton deleteButton;
+    private ActionMode actionMode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initToolbar();
         initNoteList();
         initListView();
+        initFloatingButtons();
         setClickListeners();
         readDatabase();
     }
@@ -56,6 +62,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         noteAdapter = new NoteAdapter(arrayList);
     }
 
+    private void initFloatingButtons() {
+        insertButton = (FloatingActionButton) findViewById(R.id.insert_fab);
+        deleteButton = (FloatingActionButton) findViewById(R.id.delete_fab);
+    }
+
     private void initListView() {
         listView = (ListView) findViewById(R.id.listView);
         listView.setAdapter(noteAdapter);
@@ -65,7 +76,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void setClickListeners() {
-        findViewById(R.id.insert_fab).setOnClickListener(this);
+        insertButton.setOnClickListener(this);
+        deleteButton.setOnClickListener(this);
     }
 
     private void readDatabase() {
@@ -151,22 +163,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.insert_fab:
-                startActivityForResult(new Intent(this, EditorActivity.class), REQUEST_CODE);
-                break;
-            default:
-        }
-    }
-
-    @Override
     public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
         mode.setTitle(String.valueOf(listView.getCheckedItemCount()));
     }
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        actionMode = mode;
+        deleteButton.show();
         return true;
     }
 
@@ -182,6 +186,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
+        deleteButton.hide();
+    }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.insert_fab:
+                startActivityForResult(new Intent(this, EditorActivity.class), REQUEST_CODE);
+                releaseActionMode();
+                break;
+            case R.id.delete_fab:
+                releaseActionMode();
+                break;
+            default:
+        }
+    }
+
+    private void releaseActionMode() {
+        if (actionMode != null) {
+            actionMode.finish();
+            actionMode = null;
+        }
     }
 }
