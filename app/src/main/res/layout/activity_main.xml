@@ -39,7 +39,7 @@
         android:layout_alignParentEnd="true"
         android:layout_marginBottom="@dimen/fab_margin"
         android:layout_marginEnd="@dimen/fab_margin"
-        app:srcCompat="@drawable/ic_plus" />
+        app:srcCompat="@drawable/vector_plus" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/delete_fab"
@@ -50,6 +50,6 @@
         android:layout_marginBottom="@dimen/fab_margin"
         android:layout_marginEnd="@dimen/fab_margin"
         android:visibility="invisible"
-        app:srcCompat="@drawable/ic_delete" />
+        app:srcCompat="@drawable/vector_delete" />
 
 </RelativeLayout>
