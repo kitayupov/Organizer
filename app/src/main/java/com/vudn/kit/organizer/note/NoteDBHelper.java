@@ -15,8 +15,8 @@ public class NoteDBHelper extends SQLiteOpenHelper {
     public static final String TIME_UPDATED = "timeUpdated";
     public static final String COMPLETED = "completed";
 
-    public static final String WHERE_CLAUSE =
-            BODY + "=? and " + TIME_CREATED + "=? and " + TIME_UPDATED + "=? and " + COMPLETED + "=?";
+    public static final String WHERE_CLAUSE = BODY + "=? and " + TIME_CREATED + "=? and "
+            + TIME_UPDATED + "=? and " + COMPLETED + "=?";
 
     private static final String NOTES_DB = "notes.db";
     private static final int VERSION = 3;
@@ -36,24 +36,29 @@ public class NoteDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion == 1) {
-            db.execSQL(
-                    String.format(
-                            "alter table %s add column %s numeric default %d",
-                            TABLE_NAME, TIME_CREATED, new Date().getTime())
-            );
-            db.execSQL(
-                    String.format(
-                            "alter table %s add column %s numeric default %d",
-                            TABLE_NAME, TIME_UPDATED, new Date().getTime())
-            );
-        }
-        if (oldVersion == 2) {
-            db.execSQL(
-                    String.format(
-                            "alter table %s add column %s numeric default %d",
-                            TABLE_NAME, COMPLETED, 0)
-            );
+        switch (oldVersion) {
+            case 1:
+                db.execSQL(
+                        String.format(
+                                "alter table %s add column %s numeric default %d",
+                                TABLE_NAME, TIME_CREATED, new Date().getTime())
+                );
+                db.execSQL(
+                        String.format(
+                                "alter table %s add column %s numeric default %d",
+                                TABLE_NAME, TIME_UPDATED, new Date().getTime())
+                );
+                onUpgrade(db, oldVersion + 1, newVersion);
+                break;
+            case 2:
+                db.execSQL(
+                        String.format(
+                                "alter table %s add column %s numeric default %d",
+                                TABLE_NAME, COMPLETED, 0)
+                );
+                onUpgrade(db, oldVersion + 1, newVersion);
+                break;
+            default:
         }
     }
 
