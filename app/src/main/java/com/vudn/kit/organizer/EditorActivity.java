@@ -33,7 +33,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void getIntentData() {
-        position = getIntent().getIntExtra(MainActivity.POSITION, -1);
+        position = getIntent().getIntExtra(MainActivity.POSITION, MainActivity.DEFAULT_POSITION);
         final Note note = getIntent().getParcelableExtra(Note.class.getCanonicalName());
         if (note != null) {
             bodyEditText.setText(note.getBody());

@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity
         implements AdapterView.OnItemClickListener, View.OnClickListener {
 
     public static final String POSITION = "position";
+    public static final int DEFAULT_POSITION = -1;
     public static final int REQUEST_CODE = 200;
 
     private ArrayList<Note> arrayList;
@@ -108,7 +109,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void getNote(@NonNull Intent data) {
-        int position = data.getIntExtra(POSITION, -1);
+        int position = data.getIntExtra(POSITION, DEFAULT_POSITION);
         position = (position >= 0 && position < arrayList.size()) ? position : arrayList.size();
         final Note note = data.getParcelableExtra(Note.class.getCanonicalName());
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
