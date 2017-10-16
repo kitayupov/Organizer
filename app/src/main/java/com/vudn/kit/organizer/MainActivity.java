@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.vudn.kit.organizer.note.Note;
@@ -19,14 +20,15 @@ import com.vudn.kit.organizer.note.NoteDBHelper;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
 
+    public static final String POSITION = "position";
     public static final int REQUEST_CODE = 200;
 
-    private ListView listView;
     private ArrayList<Note> arrayList;
     private NoteAdapter noteAdapter;
     private NoteDBHelper dbHelper;
+    private ListView listView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         noteAdapter = new NoteAdapter(arrayList);
         listView = (ListView) findViewById(R.id.listView);
         listView.setAdapter(noteAdapter);
+        listView.setOnItemClickListener(this);
     }
 
     private void readDatabase() {
@@ -103,13 +106,32 @@ public class MainActivity extends AppCompatActivity {
 
     private void insertNote(Intent data) {
         if (data != null) {
+            int position = data.getIntExtra(POSITION, -1);
+            position = (position >= 0 && position < arrayList.size()) ? position : arrayList.size();
             final Note note = data.getParcelableExtra(Note.class.getCanonicalName());
             final SQLiteDatabase database = dbHelper.getWritableDatabase();
-            ContentValues values = new ContentValues();
+            final ContentValues values = new ContentValues();
             values.put(NoteDBHelper.BODY, note.getBody());
-            database.insert(NoteDBHelper.TABLE_NAME, null, values);
-            arrayList.add(note);
+            if (position == arrayList.size()) {
+                database.insert(NoteDBHelper.TABLE_NAME, null, values);
+                arrayList.add(note);
+            } else {
+                final String whereClause = NoteDBHelper.BODY + "=?";
+                final Note oldNote = arrayList.get(position);
+                final String[] whereArgs = new String[]{oldNote.getBody()};
+                database.update(NoteDBHelper.TABLE_NAME, values, whereClause, whereArgs);
+                arrayList.remove(oldNote);
+                arrayList.add(position, note);
+            }
             noteAdapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        final Intent intent = new Intent(getApplicationContext(), EditorActivity.class);
+        intent.putExtra(POSITION, position);
+        intent.putExtra(Note.class.getCanonicalName(), noteAdapter.getItem(position));
+        startActivityForResult(intent, REQUEST_CODE);
     }
 }

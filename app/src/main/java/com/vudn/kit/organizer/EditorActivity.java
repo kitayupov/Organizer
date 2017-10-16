@@ -11,6 +11,7 @@ import com.vudn.kit.organizer.note.Note;
 public class EditorActivity extends AppCompatActivity implements View.OnClickListener {
 
     private TextInputEditText bodyEditText;
+    private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +21,16 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         bodyEditText = (TextInputEditText) findViewById(R.id.textInputEditText);
 
         findViewById(R.id.fab).setOnClickListener(this);
+
+        getIntentData();
+    }
+
+    private void getIntentData() {
+        position = getIntent().getIntExtra(MainActivity.POSITION, -1);
+        final Note note = getIntent().getParcelableExtra(Note.class.getCanonicalName());
+        if (note != null) {
+            bodyEditText.setText(note.getBody());
+        }
     }
 
     @Override
@@ -35,6 +46,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         final String body = bodyEditText.getText().toString();
         final Note note = new Note(body);
         final Intent intent = new Intent();
+        intent.putExtra(MainActivity.POSITION, position);
         intent.putExtra(Note.class.getCanonicalName(), note);
         setResult(RESULT_OK, intent);
         finish();
