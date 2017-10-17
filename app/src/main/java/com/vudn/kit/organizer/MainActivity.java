@@ -146,13 +146,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         position = (position >= 0 && position < arrayList.size()) ? position : arrayList.size();
         final Note note = data.getParcelableExtra(Note.class.getCanonicalName());
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
-        final ContentValues values = getContentValues(note);
         if (position == arrayList.size()) {
-            insertNote(note, database, values);
+            insertNote(note, database);
         } else {
-            updateNote(position, note, database, values);
+            updateNote(position, note, database);
         }
         noteAdapter.notifyDataSetChanged();
+    }
+
+    private void insertNote(Note note, SQLiteDatabase database) {
+        final ContentValues values = getContentValues(note);
+        database.insert(NoteDBHelper.TABLE_NAME, null, values);
+        arrayList.add(note);
+    }
+
+    private void updateNote(int position, Note note, SQLiteDatabase database) {
+        final Note oldNote = arrayList.get(position);
+        final ContentValues values = getContentValues(note);
+        database.update(NoteDBHelper.TABLE_NAME, values, NoteDBHelper.WHERE_CLAUSE, getWhereArgs(oldNote));
+        arrayList.remove(oldNote);
+        arrayList.add(position, note);
     }
 
     @NonNull
@@ -163,18 +176,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         values.put(NoteDBHelper.TIME_UPDATED, note.getTimeUpdated());
         values.put(NoteDBHelper.COMPLETED, note.isCompleted() ? 1 : 0);
         return values;
-    }
-
-    private void insertNote(Note note, SQLiteDatabase database, ContentValues values) {
-        database.insert(NoteDBHelper.TABLE_NAME, null, values);
-        arrayList.add(note);
-    }
-
-    private void updateNote(int position, Note note, SQLiteDatabase database, ContentValues values) {
-        final Note oldNote = arrayList.get(position);
-        database.update(NoteDBHelper.TABLE_NAME, values, NoteDBHelper.WHERE_CLAUSE, getWhereArgs(oldNote));
-        arrayList.remove(oldNote);
-        arrayList.add(position, note);
     }
 
     @NonNull
@@ -345,11 +346,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void completeSelectedNotes() {
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
         for (Note note : selectedNotes) {
-            final int index = arrayList.indexOf(note);
+            final int position = arrayList.indexOf(note);
             final Note copy = note.copy();
             copy.setCompleted();
             copy.setUpdated();
-            updateNote(index, copy, database, getContentValues(copy));
+            updateNote(position, copy, database);
         }
         noteAdapter.notifyDataSetChanged();
     }
