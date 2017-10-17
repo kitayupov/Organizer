@@ -3,6 +3,8 @@ package com.vudn.kit.organizer.note;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Date;
+
 public class Note implements Parcelable {
 
     private String body;
@@ -50,6 +52,18 @@ public class Note implements Parcelable {
 
     public boolean isCompleted() {
         return isCompleted;
+    }
+
+    public void setCompleted() {
+        isCompleted = true;
+    }
+
+    public Note copy() {
+        return new Note(body, timeCreated, timeUpdated, isCompleted);
+    }
+
+    public void setUpdated() {
+        timeUpdated = new Date().getTime();
     }
 
     @Override

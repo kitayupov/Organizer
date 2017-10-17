@@ -7,4 +7,6 @@
     <string name="button_yes">Yes</string>
     <string name="button_no">No</string>
     <string name="label_completed">Completed</string>
+    <string name="dialog_completed_title">Set completed</string>
+    <string name="dialog_completed_message">Do you want to set selected notes completed?</string>
 </resources>

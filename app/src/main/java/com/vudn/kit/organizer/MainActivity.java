@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private FloatingActionButton insertButton;
     private FloatingActionButton deleteButton;
+    private FloatingActionButton completeButton;
     private ActionMode actionMode;
 
     @Override
@@ -72,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initFloatingButtons() {
         insertButton = (FloatingActionButton) findViewById(R.id.insert_fab);
         deleteButton = (FloatingActionButton) findViewById(R.id.delete_fab);
+        completeButton = (FloatingActionButton) findViewById(R.id.complete_fab);
     }
 
     private void initListView() {
@@ -85,6 +87,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void setClickListeners() {
         insertButton.setOnClickListener(this);
         deleteButton.setOnClickListener(this);
+        completeButton.setOnClickListener(this);
     }
 
     private void readDatabase() {
@@ -143,17 +146,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         position = (position >= 0 && position < arrayList.size()) ? position : arrayList.size();
         final Note note = data.getParcelableExtra(Note.class.getCanonicalName());
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
-        final ContentValues values = new ContentValues();
-        values.put(NoteDBHelper.BODY, note.getBody());
-        values.put(NoteDBHelper.TIME_CREATED, note.getTimeCreated());
-        values.put(NoteDBHelper.TIME_UPDATED, note.getTimeUpdated());
-        values.put(NoteDBHelper.COMPLETED, note.isCompleted() ? 1 : 0);
+        final ContentValues values = getContentValues(note);
         if (position == arrayList.size()) {
             insertNote(note, database, values);
         } else {
             updateNote(position, note, database, values);
         }
         noteAdapter.notifyDataSetChanged();
+    }
+
+    @NonNull
+    private ContentValues getContentValues(Note note) {
+        final ContentValues values = new ContentValues();
+        values.put(NoteDBHelper.BODY, note.getBody());
+        values.put(NoteDBHelper.TIME_CREATED, note.getTimeCreated());
+        values.put(NoteDBHelper.TIME_UPDATED, note.getTimeUpdated());
+        values.put(NoteDBHelper.COMPLETED, note.isCompleted() ? 1 : 0);
+        return values;
     }
 
     private void insertNote(Note note, SQLiteDatabase database, ContentValues values) {
@@ -213,6 +222,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void setButtonsStateStarted() {
         changeInsertButtonForward();
         deleteButton.show();
+        completeButton.show();
     }
 
     private void changeInsertButtonForward() {
@@ -254,6 +264,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void setButtonsStateFinished() {
         changeInsertButtonBackward();
         deleteButton.hide();
+        completeButton.hide();
     }
 
     private void changeInsertButtonBackward() {
@@ -272,6 +283,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.delete_fab:
                 showDeleteAlertDialog();
+                break;
+            case R.id.complete_fab:
+                showCompleteAlertDialog();
                 break;
             default:
         }
@@ -303,6 +317,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         for (Note note : selectedNotes) {
             database.delete(NoteDBHelper.TABLE_NAME, NoteDBHelper.WHERE_CLAUSE, getWhereArgs(note));
             arrayList.remove(note);
+        }
+        noteAdapter.notifyDataSetChanged();
+    }
+
+    private void showCompleteAlertDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_completed_title)
+                .setMessage(R.string.dialog_completed_message)
+                .setPositiveButton(R.string.button_yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        completeSelectedNotes();
+                        releaseActionMode();
+                    }
+                })
+                .setNegativeButton(R.string.button_no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        releaseActionMode();
+                    }
+                })
+                .create()
+                .show();
+    }
+
+    private void completeSelectedNotes() {
+        final SQLiteDatabase database = dbHelper.getWritableDatabase();
+        for (Note note : selectedNotes) {
+            final int index = arrayList.indexOf(note);
+            final Note copy = note.copy();
+            copy.setCompleted();
+            copy.setUpdated();
+            updateNote(index, copy, database, getContentValues(copy));
         }
         noteAdapter.notifyDataSetChanged();
     }
