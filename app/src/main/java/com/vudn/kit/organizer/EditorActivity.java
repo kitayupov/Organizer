@@ -3,10 +3,10 @@ package com.vudn.kit.organizer;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.EditText;
 
 import com.vudn.kit.organizer.note.Note;
 
@@ -14,7 +14,7 @@ import java.util.Date;
 
 public class EditorActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private TextInputEditText bodyEditText;
+    private EditText bodyEditText;
     private CheckBox completedCheckBox;
     private int position;
     private long timeCreated;
@@ -30,7 +30,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void initControls() {
-        bodyEditText = (TextInputEditText) findViewById(R.id.textInputEditText);
+        bodyEditText = (EditText) findViewById(R.id.textInputEditText);
         completedCheckBox = ((CheckBox) findViewById(R.id.completedCheckBox));
     }
 

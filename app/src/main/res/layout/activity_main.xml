@@ -36,7 +36,7 @@
             android:layout_below="@+id/delete_fab"
             android:layout_marginBottom="@dimen/fab_margin"
             android:layout_marginEnd="@dimen/fab_margin"
-            app:srcCompat="@drawable/vector_plus" />
+            android:src="@drawable/vector_plus" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/delete_fab"
@@ -46,7 +46,7 @@
             android:layout_marginBottom="@dimen/fab_margin"
             android:layout_marginEnd="@dimen/fab_margin"
             android:visibility="invisible"
-            app:srcCompat="@drawable/vector_delete" />
+            android:src="@drawable/vector_delete" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/complete_fab"
@@ -55,7 +55,7 @@
             android:layout_marginBottom="@dimen/fab_margin"
             android:layout_marginEnd="@dimen/fab_margin"
             android:visibility="invisible"
-            app:srcCompat="@drawable/vector_complete" />
+            android:src="@drawable/vector_complete" />
 
     </RelativeLayout>
 
