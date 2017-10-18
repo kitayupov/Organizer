@@ -13,6 +13,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -21,11 +23,11 @@ import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.vudn.kit.organizer.note.Note;
 import com.vudn.kit.organizer.note.NoteAdapter;
 import com.vudn.kit.organizer.note.NoteDBHelper;
+import com.vudn.kit.organizer.note.RecyclerAdapter;
 
 import java.util.ArrayList;
 
@@ -40,7 +42,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ArrayList<Note> selectedNotes;
     private NoteAdapter noteAdapter;
     private NoteDBHelper dbHelper;
-    private ListView listView;
+
+    private RecyclerView recyclerView;
+    private RecyclerAdapter recyclerAdapter;
 
     private FloatingActionButton insertButton;
     private FloatingActionButton deleteButton;
@@ -68,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initNoteList() {
         arrayList = new ArrayList<>();
         noteAdapter = new NoteAdapter(arrayList);
+        recyclerAdapter = new RecyclerAdapter(arrayList);
     }
 
     private void initFloatingButtons() {
@@ -77,11 +82,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initListView() {
-        listView = (ListView) findViewById(R.id.listView);
-        listView.setAdapter(noteAdapter);
-        listView.setOnItemClickListener(this);
-        listView.setChoiceMode(AbsListView.CHOICE_MODE_MULTIPLE_MODAL);
-        listView.setMultiChoiceModeListener(this);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(recyclerAdapter);
     }
 
     private void setClickListeners() {
@@ -208,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void updateSelectedItemsCount(ActionMode mode) {
-        final int count = listView.getCheckedItemCount();
+        final int count = recyclerAdapter.getItemCount();
         mode.setTitle(String.valueOf(count));
     }
 
