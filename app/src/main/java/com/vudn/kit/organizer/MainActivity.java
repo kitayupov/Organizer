@@ -22,17 +22,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 
 import com.vudn.kit.organizer.note.Note;
-import com.vudn.kit.organizer.note.NoteAdapter;
 import com.vudn.kit.organizer.note.NoteDBHelper;
 import com.vudn.kit.organizer.note.RecyclerAdapter;
 
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
-        AdapterView.OnItemClickListener, AbsListView.MultiChoiceModeListener {
+        AbsListView.MultiChoiceModeListener, RecyclerAdapter.OnItemClickListener {
 
     public static final String POSITION = "position";
     public static final int DEFAULT_POSITION = -1;
@@ -40,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private ArrayList<Note> arrayList;
     private ArrayList<Note> selectedNotes;
-    private NoteAdapter noteAdapter;
     private NoteDBHelper dbHelper;
 
     private RecyclerView recyclerView;
@@ -71,8 +68,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initNoteList() {
         arrayList = new ArrayList<>();
-        noteAdapter = new NoteAdapter(arrayList);
-        recyclerAdapter = new RecyclerAdapter(arrayList);
+        recyclerAdapter = new RecyclerAdapter(arrayList, this);
     }
 
     private void initFloatingButtons() {
@@ -154,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             updateNote(position, note, database);
         }
-        noteAdapter.notifyDataSetChanged();
+        recyclerAdapter.notifyDataSetChanged();
     }
 
     private void insertNote(Note note, SQLiteDatabase database) {
@@ -188,10 +184,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemClick(int position) {
         final Intent intent = new Intent(getApplicationContext(), EditorActivity.class);
         intent.putExtra(POSITION, position);
-        intent.putExtra(Note.class.getCanonicalName(), noteAdapter.getItem(position));
+        intent.putExtra(Note.class.getCanonicalName(), recyclerAdapter.getItem(position));
         startActivityForResult(intent, REQUEST_CODE);
     }
 
@@ -202,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void insertOrRemoveItem(int position, boolean checked) {
-        final Note note = noteAdapter.getItem(position);
+        final Note note = recyclerAdapter.getItem(position);
         if (checked) {
             selectedNotes.add(note);
         } else {
@@ -322,7 +318,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             database.delete(NoteDBHelper.TABLE_NAME, NoteDBHelper.WHERE_CLAUSE, getWhereArgs(note));
             arrayList.remove(note);
         }
-        noteAdapter.notifyDataSetChanged();
+        recyclerAdapter.notifyDataSetChanged();
     }
 
     private void showCompleteAlertDialog() {
@@ -355,7 +351,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             copy.setUpdated();
             updateNote(position, copy, database);
         }
-        noteAdapter.notifyDataSetChanged();
+        recyclerAdapter.notifyDataSetChanged();
     }
 
     private void releaseActionMode() {
