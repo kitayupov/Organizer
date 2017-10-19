@@ -353,9 +353,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void completeSelectedNotes() {
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
-        for (Note note : selectedNotes) {
-            final int position = arrayList.indexOf(note);
-            final Note copy = note.copy();
+        final ArrayList<Integer> selectedItems = recyclerAdapter.getSelectedItems();
+        for (Integer position : selectedItems) {
+            final Note copy = arrayList.get(position).copy();
             copy.setCompleted();
             copy.setUpdated();
             updateNote(position, copy, database);
@@ -368,6 +368,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             actionMode.finish();
             actionMode = null;
         }
+        recyclerAdapter.clearSelections();
     }
 
     @Override
