@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -17,8 +18,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.ActionMode;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
 import android.widget.AbsListView;
@@ -30,7 +33,7 @@ import com.vudn.kit.organizer.note.RecyclerAdapter;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
-        AbsListView.MultiChoiceModeListener, RecyclerAdapter.OnItemClickListener {
+        AbsListView.MultiChoiceModeListener, RecyclerView.OnItemTouchListener {
 
     public static final String POSITION = "position";
     public static final int DEFAULT_POSITION = -1;
@@ -42,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private RecyclerView recyclerView;
     private RecyclerAdapter recyclerAdapter;
+    private GestureDetectorCompat gestureDetector;
 
     private FloatingActionButton insertButton;
     private FloatingActionButton deleteButton;
@@ -68,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void initNoteList() {
         arrayList = new ArrayList<>();
-        recyclerAdapter = new RecyclerAdapter(arrayList, this);
+        recyclerAdapter = new RecyclerAdapter(arrayList);
     }
 
     private void initFloatingButtons() {
@@ -81,6 +85,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(recyclerAdapter);
+        recyclerView.addOnItemTouchListener(this);
+        gestureDetector = new GestureDetectorCompat(this, gestureListener);
     }
 
     private void setClickListeners() {
@@ -184,14 +190,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void onItemClick(int position) {
-        final Intent intent = new Intent(getApplicationContext(), EditorActivity.class);
-        intent.putExtra(POSITION, position);
-        intent.putExtra(Note.class.getCanonicalName(), recyclerAdapter.getItem(position));
-        startActivityForResult(intent, REQUEST_CODE);
-    }
-
-    @Override
     public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
         insertOrRemoveItem(position, checked);
         updateSelectedItemsCount(mode);
@@ -287,6 +285,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.complete_fab:
                 showCompleteAlertDialog();
                 break;
+            case R.id.item_layout:
+                final int position = recyclerView.getChildPosition(v);
+                if (actionMode != null) {
+                    toggleSelection(position);
+                    return;
+                }
+                final Intent intent = new Intent(getApplicationContext(), EditorActivity.class);
+                intent.putExtra(POSITION, position);
+                intent.putExtra(Note.class.getCanonicalName(), recyclerAdapter.getItem(position));
+                startActivityForResult(intent, REQUEST_CODE);
+                break;
             default:
         }
     }
@@ -360,4 +369,46 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             actionMode = null;
         }
     }
+
+    @Override
+    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
+        gestureDetector.onTouchEvent(e);
+        return false;
+    }
+
+    @Override
+    public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+    }
+
+    @Override
+    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+    }
+
+    private void toggleSelection(int position) {
+        recyclerAdapter.toggleSelection(position);
+        actionMode.setTitle(String.valueOf(recyclerAdapter.getSelectedItemCount()));
+    }
+
+    private GestureDetector.SimpleOnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener() {
+        @Override
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+            final View view = recyclerView.findChildViewUnder(e.getX(), e.getY());
+            onClick(view);
+            return super.onSingleTapConfirmed(e);
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            final View view = recyclerView.findChildViewUnder(e.getX(), e.getY());
+            if (actionMode != null) {
+                return;
+            }
+            actionMode = startActionMode(MainActivity.this);
+            final int position = recyclerView.getChildPosition(view);
+            toggleSelection(position);
+            super.onLongPress(e);
+        }
+    };
 }
