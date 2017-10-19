@@ -1,5 +1,6 @@
 package com.vudn.kit.organizer.note;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -31,7 +32,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.nameTextView.setText(arrayList.get(position).getBody());
+        final Note item = arrayList.get(position);
+        holder.nameTextView.setText(item.getBody());
+        holder.nameTextView.setTextColor(item.isCompleted() ? Color.LTGRAY : Color.DKGRAY);
     }
 
     @Override
