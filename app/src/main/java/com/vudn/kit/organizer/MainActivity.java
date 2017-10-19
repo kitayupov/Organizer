@@ -190,12 +190,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-        updateSelectedItemsCount(mode);
-    }
 
-    private void updateSelectedItemsCount(ActionMode mode) {
-        final int count = recyclerAdapter.getItemCount();
-        mode.setTitle(String.valueOf(count));
     }
 
     @Override
