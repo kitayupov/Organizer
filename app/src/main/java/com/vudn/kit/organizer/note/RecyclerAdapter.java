@@ -1,6 +1,7 @@
 package com.vudn.kit.organizer.note;
 
 import android.graphics.Color;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -11,7 +12,6 @@ import android.widget.TextView;
 import com.vudn.kit.organizer.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 
@@ -35,6 +35,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         final Note item = arrayList.get(position);
         holder.nameTextView.setText(item.getBody());
         holder.nameTextView.setTextColor(item.isCompleted() ? Color.LTGRAY : Color.DKGRAY);
+        holder.cardView.setActivated(selectedItems.get(position));
     }
 
     @Override
@@ -74,10 +75,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         private TextView nameTextView;
+        private CardView cardView;
 
         ViewHolder(View view) {
             super(view);
             nameTextView = view.findViewById(R.id.textView);
+            cardView = view.findViewById(R.id.cardView);
         }
     }
 }
