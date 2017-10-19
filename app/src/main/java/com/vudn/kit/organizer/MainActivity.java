@@ -40,7 +40,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final int REQUEST_CODE = 200;
 
     private ArrayList<Note> arrayList;
-    private ArrayList<Note> selectedNotes;
     private NoteDBHelper dbHelper;
 
     private RecyclerView recyclerView;
@@ -191,17 +190,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-        insertOrRemoveItem(position, checked);
         updateSelectedItemsCount(mode);
-    }
-
-    private void insertOrRemoveItem(int position, boolean checked) {
-        final Note note = recyclerAdapter.getItem(position);
-        if (checked) {
-            selectedNotes.add(note);
-        } else {
-            selectedNotes.remove(note);
-        }
     }
 
     private void updateSelectedItemsCount(ActionMode mode) {
@@ -211,7 +200,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        selectedNotes = new ArrayList<>();
         setButtonsStateStarted();
         actionMode = mode;
         return true;
@@ -254,7 +242,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
-        selectedNotes = null;
         setButtonsStateFinished();
         actionMode = null;
     }
@@ -323,7 +310,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void deleteSelectedNotes() {
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
-        for (Note note : selectedNotes) {
+        for (Integer position : recyclerAdapter.getSelectedItems()) {
+            final Note note = recyclerAdapter.getItem(position);
             database.delete(NoteDBHelper.TABLE_NAME, NoteDBHelper.WHERE_CLAUSE, getWhereArgs(note));
             arrayList.remove(note);
         }
