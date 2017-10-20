@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.cardView:
                 final int position = recyclerView.getChildPosition(v);
                 if (actionMode != null) {
-                    recyclerAdapter.toggleSelection(position);
+                    recyclerAdapter.toggleSelected(position);
                     final int count = recyclerAdapter.getSelectedItemCount();
                     if (count != 0) {
                         actionMode.setTitle(String.valueOf(count));

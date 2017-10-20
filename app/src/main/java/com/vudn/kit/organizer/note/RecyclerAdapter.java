@@ -7,6 +7,7 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.vudn.kit.organizer.R;
@@ -17,6 +18,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     private final ArrayList<Note> arrayList;
     private SparseBooleanArray selectedItems;
+
     private View.OnClickListener clickListener;
     private View.OnLongClickListener longClickListener;
 
@@ -41,13 +43,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         final Note item = arrayList.get(position);
         holder.nameTextView.setText(item.getBody());
         holder.nameTextView.setTextColor(item.isCompleted() ? Color.LTGRAY : Color.DKGRAY);
         holder.cardView.setOnClickListener(clickListener);
         holder.cardView.setOnLongClickListener(longClickListener);
-        holder.layout.setActivated(selectedItems.get(position));
+        holder.mainLayout.setActivated(selectedItems.get(position));
+        holder.completedCheckBox.setChecked(item.isCompleted());
     }
 
     @Override
@@ -59,13 +62,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         return arrayList.get(position);
     }
 
-    public void toggleSelection(int pos) {
-        if (selectedItems.get(pos, false)) {
-            selectedItems.delete(pos);
+    public void toggleSelected(int position) {
+        if (selectedItems.get(position, false)) {
+            selectedItems.delete(position);
         } else {
-            selectedItems.put(pos, true);
+            selectedItems.put(position, true);
         }
-        notifyItemChanged(pos);
+        notifyItemChanged(position);
     }
 
     public void clearSelections() {
@@ -78,7 +81,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     }
 
     public ArrayList<Integer> getSelectedItems() {
-        ArrayList<Integer> items = new ArrayList<Integer>(selectedItems.size());
+        final ArrayList<Integer> items = new ArrayList<>(selectedItems.size());
         for (int i = 0; i < selectedItems.size(); i++) {
             items.add(selectedItems.keyAt(i));
         }
@@ -87,15 +90,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private TextView nameTextView;
+        private View mainLayout;
         private CardView cardView;
-        private View layout;
+        private TextView nameTextView;
+        private CheckBox completedCheckBox;
 
         ViewHolder(View view) {
             super(view);
-            nameTextView = view.findViewById(R.id.textView);
+            nameTextView = view.findViewById(R.id.nameTextView);
             cardView = view.findViewById(R.id.cardView);
-            layout = view.findViewById(R.id.itemContent);
+            mainLayout = view.findViewById(R.id.cardContent);
+            completedCheckBox = view.findViewById(R.id.completedCheckbox);
         }
     }
 }
