@@ -18,7 +18,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.ActionMode;
-import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -34,7 +33,7 @@ import com.vudn.kit.organizer.view.SpacesItemDecoration;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
-        AbsListView.MultiChoiceModeListener, RecyclerView.OnItemTouchListener {
+        AbsListView.MultiChoiceModeListener, RecyclerView.OnItemTouchListener, View.OnLongClickListener {
 
     public static final String POSITION = "position";
     public static final int DEFAULT_POSITION = -1;
@@ -73,6 +72,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initNoteList() {
         arrayList = new ArrayList<>();
         recyclerAdapter = new RecyclerAdapter(arrayList);
+        recyclerAdapter.setOnClickListener(this);
+        recyclerAdapter.setOnLongClickListener(this);
     }
 
     private void initFloatingButtons() {
@@ -86,8 +87,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new SpacesItemDecoration(16));
         recyclerView.setAdapter(recyclerAdapter);
-        recyclerView.addOnItemTouchListener(this);
-        gestureDetector = new GestureDetectorCompat(this, gestureListener);
     }
 
     private void setClickListeners() {
@@ -291,6 +290,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    @Override
+    public boolean onLongClick(View view) {
+        if (actionMode == null) {
+            actionMode = startActionMode(MainActivity.this);
+        }
+        onClick(view);
+        return true;
+    }
+
     private void showDeleteAlertDialog() {
         new AlertDialog.Builder(this)
                 .setTitle(R.string.dialog_delete_title)
@@ -376,23 +384,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
 
     }
-
-    private GestureDetector.SimpleOnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener() {
-        @Override
-        public boolean onSingleTapConfirmed(MotionEvent e) {
-            final View view = recyclerView.findChildViewUnder(e.getX(), e.getY());
-            onClick(view);
-            return super.onSingleTapConfirmed(e);
-        }
-
-        @Override
-        public void onLongPress(MotionEvent e) {
-            final View view = recyclerView.findChildViewUnder(e.getX(), e.getY());
-            if (actionMode == null) {
-                actionMode = startActionMode(MainActivity.this);
-            }
-            onClick(view);
-            super.onLongPress(e);
-        }
-    };
 }

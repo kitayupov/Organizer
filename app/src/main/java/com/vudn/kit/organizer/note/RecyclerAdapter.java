@@ -17,10 +17,20 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     private final ArrayList<Note> arrayList;
     private SparseBooleanArray selectedItems;
+    private View.OnClickListener clickListener;
+    private View.OnLongClickListener longClickListener;
 
     public RecyclerAdapter(ArrayList<Note> arrayList) {
         this.arrayList = arrayList;
         selectedItems = new SparseBooleanArray();
+    }
+
+    public void setOnClickListener(View.OnClickListener clickListener) {
+        this.clickListener = clickListener;
+    }
+
+    public void setOnLongClickListener(View.OnLongClickListener longClickListener) {
+        this.longClickListener = longClickListener;
     }
 
     @Override
@@ -36,6 +46,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         holder.nameTextView.setText(item.getBody());
         holder.nameTextView.setTextColor(item.isCompleted() ? Color.LTGRAY : Color.DKGRAY);
         holder.cardView.setActivated(selectedItems.get(position));
+        holder.cardView.setOnClickListener(clickListener);
+        holder.cardView.setOnLongClickListener(longClickListener);
     }
 
     @Override
