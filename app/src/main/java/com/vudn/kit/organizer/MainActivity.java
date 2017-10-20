@@ -237,6 +237,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onDestroyActionMode(ActionMode mode) {
+        recyclerAdapter.clearSelections();
         setButtonsStateFinished();
         actionMode = null;
     }
@@ -349,9 +350,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void releaseActionMode() {
         if (actionMode != null) {
             actionMode.finish();
-            actionMode = null;
         }
-        recyclerAdapter.clearSelections();
     }
 
     @Override
