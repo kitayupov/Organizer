@@ -37,16 +37,14 @@ public class MainActivity extends AppCompatActivity implements
     public static final int DEFAULT_POSITION = -1;
     public static final int REQUEST_CODE = 200;
 
-    private ArrayList<Note> arrayList;
     private NoteDBHelper dbHelper;
-
     private RecyclerView recyclerView;
     private RecyclerAdapter recyclerAdapter;
+    private ActionMode actionMode;
 
     private FloatingActionButton insertButton;
     private FloatingActionButton deleteButton;
     private FloatingActionButton completeButton;
-    private ActionMode actionMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +65,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void initNoteList() {
-        arrayList = new ArrayList<>();
-        recyclerAdapter = new RecyclerAdapter(arrayList);
+        recyclerAdapter = new RecyclerAdapter();
         recyclerAdapter.setOnClickListener(this);
         recyclerAdapter.setOnLongClickListener(this);
         recyclerAdapter.setOnCompletedStateChangeListener(this);
@@ -108,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements
                 final long timeUpdated = cursor.getLong(updatedIndex);
                 final boolean completed = cursor.getInt(completedIndex) == 1;
                 final Note note = new Note(body, timeCreated, timeUpdated, completed);
-                arrayList.add(note);
+                recyclerAdapter.addNote(note);
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -116,10 +113,11 @@ public class MainActivity extends AppCompatActivity implements
 
     private void getNote(@NonNull Intent data) {
         int position = data.getIntExtra(POSITION, DEFAULT_POSITION);
-        position = (position >= 0 && position < arrayList.size()) ? position : arrayList.size();
+        final int count = recyclerAdapter.getItemCount();
+        position = (position >= 0 && position < count) ? position : count;
         final Note note = data.getParcelableExtra(Note.class.getCanonicalName());
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
-        if (position == arrayList.size()) {
+        if (position == count) {
             insertNote(note, database);
         } else {
             updateNote(position, note, database);
@@ -130,15 +128,14 @@ public class MainActivity extends AppCompatActivity implements
     private void insertNote(Note note, SQLiteDatabase database) {
         final ContentValues values = getContentValues(note);
         database.insert(NoteDBHelper.TABLE_NAME, null, values);
-        arrayList.add(note);
+        recyclerAdapter.addNote(note);
     }
 
     private void updateNote(int position, Note note, SQLiteDatabase database) {
-        final Note oldNote = arrayList.get(position);
+        final Note oldNote = recyclerAdapter.getItem(position);
         final ContentValues values = getContentValues(note);
         database.update(NoteDBHelper.TABLE_NAME, values, NoteDBHelper.WHERE_CLAUSE, getWhereArgs(oldNote));
-        arrayList.remove(oldNote);
-        arrayList.add(position, note);
+        recyclerAdapter.addNote(position, note);
     }
 
     @NonNull
@@ -219,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements
         for (Integer position : recyclerAdapter.getSelectedItems()) {
             final Note note = recyclerAdapter.getItem(position);
             database.delete(NoteDBHelper.TABLE_NAME, NoteDBHelper.WHERE_CLAUSE, getWhereArgs(note));
-            arrayList.remove(note);
+            recyclerAdapter.removeNote(note);
         }
         recyclerAdapter.notifyDataSetChanged();
     }
@@ -249,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
         final ArrayList<Integer> selectedItems = recyclerAdapter.getSelectedItems();
         for (Integer position : selectedItems) {
-            final Note copy = arrayList.get(position).copy();
+            final Note copy = recyclerAdapter.getItem(position).copy();
             copy.setCompleted(true);
             copy.setUpdated();
             updateNote(position, copy, database);
@@ -365,7 +362,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onCompletedStateChanged(int position) {
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
-        final Note copy = arrayList.get(position).copy();
+        final Note copy = recyclerAdapter.getItem(position).copy();
         copy.setCompleted(!copy.isCompleted());
         copy.setUpdated();
         updateNote(position, copy, database);

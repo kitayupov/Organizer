@@ -23,8 +23,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     private View.OnLongClickListener longClickListener;
     private OnCompletedStateChangeListener stateChangeListener;
 
-    public RecyclerAdapter(ArrayList<Note> arrayList) {
-        this.arrayList = arrayList;
+    public RecyclerAdapter() {
+        this.arrayList = new ArrayList<>();
         selectedItems = new SparseBooleanArray();
     }
 
@@ -48,7 +48,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         final Note item = arrayList.get(position);
         holder.nameTextView.setText(item.getBody());
         holder.nameTextView.setTextColor(item.isCompleted() ? Color.LTGRAY : Color.DKGRAY);
@@ -59,7 +59,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         holder.completedCheckBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                stateChangeListener.onCompletedStateChanged(position);
+                if (stateChangeListener != null) {
+                    stateChangeListener.onCompletedStateChanged(holder.getAdapterPosition());
+                }
             }
         });
     }
@@ -97,6 +99,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             items.add(selectedItems.keyAt(i));
         }
         return items;
+    }
+
+    public void addNote(Note note) {
+        arrayList.add(note);
+    }
+
+    public void addNote(int position, Note note) {
+        arrayList.remove(position);
+        arrayList.add(position, note);
+    }
+
+    public void removeNote(Note note) {
+        arrayList.remove(note);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
