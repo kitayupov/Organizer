@@ -5,5 +5,7 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorCancel">#757575</color>
     <color name="colorItemDefault">#E8EAF6</color>
-    <color name="colorItemSelected">#8C9EFF</color>
+    <color name="colorItemSelected">#C5CAE9</color>
+    <color name="colorItemStroke">#90A4AE</color>
+    <color name="colorBackground">#E0E0E0</color>
 </resources>
