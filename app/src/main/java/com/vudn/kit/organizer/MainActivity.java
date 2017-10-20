@@ -29,6 +29,7 @@ import android.widget.AbsListView;
 import com.vudn.kit.organizer.note.Note;
 import com.vudn.kit.organizer.note.NoteDBHelper;
 import com.vudn.kit.organizer.note.RecyclerAdapter;
+import com.vudn.kit.organizer.view.SpacesItemDecoration;
 
 import java.util.ArrayList;
 
@@ -83,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initListView() {
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.addItemDecoration(new SpacesItemDecoration(16));
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.addOnItemTouchListener(this);
         gestureDetector = new GestureDetectorCompat(this, gestureListener);
@@ -268,7 +270,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.complete_fab:
                 showCompleteAlertDialog();
                 break;
-            case R.id.item_layout:
+            case R.id.cardView:
                 final int position = recyclerView.getChildPosition(v);
                 if (actionMode != null) {
                     toggleSelection(position);
