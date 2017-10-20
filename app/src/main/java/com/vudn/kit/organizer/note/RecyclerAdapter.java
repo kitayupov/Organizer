@@ -18,6 +18,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     private final ArrayList<Note> arrayList;
     private SparseBooleanArray selectedItems;
+    private SparseBooleanArray expandedItems;
 
     private View.OnClickListener clickListener;
     private View.OnLongClickListener longClickListener;
@@ -26,6 +27,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     public RecyclerAdapter() {
         this.arrayList = new ArrayList<>();
         selectedItems = new SparseBooleanArray();
+        expandedItems = new SparseBooleanArray();
     }
 
     public void setOnClickListener(View.OnClickListener clickListener) {
@@ -51,7 +53,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final Note item = arrayList.get(position);
         holder.nameTextView.setText(item.getName());
+        holder.bodyTextView.setText(item.getBody());
         holder.nameTextView.setTextColor(item.isCompleted() ? Color.LTGRAY : Color.DKGRAY);
+        holder.bodyTextView.setTextColor(item.isCompleted() ? Color.LTGRAY : Color.DKGRAY);
         holder.cardView.setOnClickListener(clickListener);
         holder.cardView.setOnLongClickListener(longClickListener);
         holder.mainLayout.setActivated(selectedItems.get(position));
@@ -64,6 +68,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 }
             }
         });
+        holder.expandedContent.setVisibility(expandedItems.get(position) ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -122,19 +127,32 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         arrayList.remove(note);
     }
 
+    public void toggleExpanded(int position) {
+        if (expandedItems.get(position, false)) {
+            expandedItems.delete(position);
+        } else {
+            expandedItems.put(position, true);
+        }
+        notifyItemChanged(position);
+    }
+
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        private View mainLayout;
-        private CardView cardView;
-        private TextView nameTextView;
-        private CheckBox completedCheckBox;
+        private final View mainLayout;
+        private final CardView cardView;
+        private final TextView nameTextView;
+        private final TextView bodyTextView;
+        private final CheckBox completedCheckBox;
+        private final View expandedContent;
 
         ViewHolder(View view) {
             super(view);
-            nameTextView = view.findViewById(R.id.nameTextView);
             cardView = view.findViewById(R.id.cardView);
             mainLayout = view.findViewById(R.id.cardContent);
+            nameTextView = view.findViewById(R.id.nameTextView);
+            bodyTextView = view.findViewById(R.id.bodyTextView);
             completedCheckBox = view.findViewById(R.id.completedCheckbox);
+            expandedContent = view.findViewById(R.id.expandedContent);
         }
     }
 

@@ -315,10 +315,7 @@ public class MainActivity extends AppCompatActivity implements
                         releaseActionMode();
                     }
                 } else {
-                    final Intent intent = new Intent(getApplicationContext(), EditorActivity.class);
-                    intent.putExtra(POSITION, position);
-                    intent.putExtra(Note.class.getCanonicalName(), recyclerAdapter.getItem(position));
-                    startActivityForResult(intent, REQUEST_CODE);
+                    recyclerAdapter.toggleExpanded(position);
                 }
                 break;
             default:
