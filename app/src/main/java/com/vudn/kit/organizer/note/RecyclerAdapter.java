@@ -45,9 +45,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         final Note item = arrayList.get(position);
         holder.nameTextView.setText(item.getBody());
         holder.nameTextView.setTextColor(item.isCompleted() ? Color.LTGRAY : Color.DKGRAY);
-        holder.cardView.setActivated(selectedItems.get(position));
         holder.cardView.setOnClickListener(clickListener);
         holder.cardView.setOnLongClickListener(longClickListener);
+        holder.layout.setActivated(selectedItems.get(position));
     }
 
     @Override
@@ -86,13 +86,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
+
         private TextView nameTextView;
         private CardView cardView;
+        private View layout;
 
         ViewHolder(View view) {
             super(view);
             nameTextView = view.findViewById(R.id.textView);
             cardView = view.findViewById(R.id.cardView);
+            layout = view.findViewById(R.id.itemContent);
         }
     }
 }
