@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -20,10 +19,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.OvershootInterpolator;
-import android.widget.AbsListView;
 
 import com.vudn.kit.organizer.note.Note;
 import com.vudn.kit.organizer.note.NoteDBHelper;
@@ -32,8 +29,8 @@ import com.vudn.kit.organizer.view.SpacesItemDecoration;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener,
-        AbsListView.MultiChoiceModeListener, RecyclerView.OnItemTouchListener, View.OnLongClickListener {
+public class MainActivity extends AppCompatActivity implements
+        View.OnClickListener, View.OnLongClickListener, ActionMode.Callback {
 
     public static final String POSITION = "position";
     public static final int DEFAULT_POSITION = -1;
@@ -44,7 +41,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private RecyclerView recyclerView;
     private RecyclerAdapter recyclerAdapter;
-    private GestureDetectorCompat gestureDetector;
 
     private FloatingActionButton insertButton;
     private FloatingActionButton deleteButton;
@@ -189,18 +185,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String.valueOf(note.getTimeUpdated()), String.valueOf(note.isCompleted() ? 1 : 0)};
     }
 
-    @Override
-    public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-
-    }
-
-    @Override
-    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        setButtonsStateStarted();
-        actionMode = mode;
-        return true;
-    }
-
     private void setButtonsStateStarted() {
         changeInsertButtonForward();
         deleteButton.show();
@@ -224,23 +208,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void changeInsertButtonColor(int color) {
         insertButton.setBackgroundTintList(
                 ColorStateList.valueOf(ContextCompat.getColor(this, color)));
-    }
-
-    @Override
-    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-        return false;
-    }
-
-    @Override
-    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        return false;
-    }
-
-    @Override
-    public void onDestroyActionMode(ActionMode mode) {
-        recyclerAdapter.clearSelections();
-        setButtonsStateFinished();
-        actionMode = null;
     }
 
     private void setButtonsStateFinished() {
@@ -297,6 +264,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         onClick(view);
         return true;
+    }
+
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+        setButtonsStateStarted();
+        actionMode = mode;
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        return false;
+    }
+
+    @Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        return false;
+    }
+
+    @Override
+    public void onDestroyActionMode(ActionMode mode) {
+        recyclerAdapter.clearSelections();
+        setButtonsStateFinished();
+        actionMode = null;
     }
 
     private void showDeleteAlertDialog() {
@@ -367,21 +358,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (actionMode != null) {
             actionMode.finish();
         }
-    }
-
-    @Override
-    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent e) {
-        gestureDetector.onTouchEvent(e);
-        return false;
-    }
-
-    @Override
-    public void onTouchEvent(RecyclerView rv, MotionEvent e) {
-
-    }
-
-    @Override
-    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-
     }
 }
