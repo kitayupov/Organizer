@@ -27,8 +27,6 @@ import com.vudn.kit.organizer.note.NoteDBHelper;
 import com.vudn.kit.organizer.note.RecyclerAdapter;
 import com.vudn.kit.organizer.view.SpacesItemDecoration;
 
-import java.util.ArrayList;
-
 public class MainActivity extends AppCompatActivity implements
         View.OnClickListener, View.OnLongClickListener, ActionMode.Callback,
         RecyclerAdapter.OnCompletedStateChangeListener {
@@ -213,8 +211,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void deleteSelectedNotes() {
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
-        for (Integer position : recyclerAdapter.getSelectedItems()) {
-            final Note note = recyclerAdapter.getItem(position);
+        for (Note note : recyclerAdapter.getSelectedItems()) {
             database.delete(NoteDBHelper.TABLE_NAME, NoteDBHelper.WHERE_CLAUSE, getWhereArgs(note));
             recyclerAdapter.removeNote(note);
         }
@@ -244,8 +241,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void completeSelectedNotes() {
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
-        final ArrayList<Integer> selectedItems = recyclerAdapter.getSelectedItems();
-        for (Integer position : selectedItems) {
+        for (Integer position : recyclerAdapter.getSelectedPositions()) {
             final Note copy = recyclerAdapter.getItem(position).copy();
             copy.setCompleted(true);
             copy.setUpdated();
@@ -309,7 +305,7 @@ public class MainActivity extends AppCompatActivity implements
                 final int position = recyclerView.getChildPosition(v);
                 if (actionMode != null) {
                     recyclerAdapter.toggleSelected(position);
-                    final int count = recyclerAdapter.getSelectedItemCount();
+                    final int count = recyclerAdapter.getSelectedItemsCount();
                     if (count != 0) {
                         actionMode.setTitle(String.valueOf(count));
                     } else {

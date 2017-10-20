@@ -89,14 +89,22 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         notifyDataSetChanged();
     }
 
-    public int getSelectedItemCount() {
+    public int getSelectedItemsCount() {
         return selectedItems.size();
     }
 
-    public ArrayList<Integer> getSelectedItems() {
+    public ArrayList<Integer> getSelectedPositions() {
         final ArrayList<Integer> items = new ArrayList<>(selectedItems.size());
         for (int i = 0; i < selectedItems.size(); i++) {
             items.add(selectedItems.keyAt(i));
+        }
+        return items;
+    }
+
+    public ArrayList<Note> getSelectedItems() {
+        final ArrayList<Note> items = new ArrayList<>(selectedItems.size());
+        for (int i = 0; i < selectedItems.size(); i++) {
+            items.add(arrayList.get(selectedItems.keyAt(i)));
         }
         return items;
     }
