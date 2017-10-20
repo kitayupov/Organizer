@@ -273,13 +273,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.cardView:
                 final int position = recyclerView.getChildPosition(v);
                 if (actionMode != null) {
-                    toggleSelection(position);
-                    return;
+                    recyclerAdapter.toggleSelection(position);
+                    final int count = recyclerAdapter.getSelectedItemCount();
+                    if (count != 0) {
+                        actionMode.setTitle(String.valueOf(count));
+                    } else {
+                        releaseActionMode();
+                    }
+                } else {
+                    final Intent intent = new Intent(getApplicationContext(), EditorActivity.class);
+                    intent.putExtra(POSITION, position);
+                    intent.putExtra(Note.class.getCanonicalName(), recyclerAdapter.getItem(position));
+                    startActivityForResult(intent, REQUEST_CODE);
                 }
-                final Intent intent = new Intent(getApplicationContext(), EditorActivity.class);
-                intent.putExtra(POSITION, position);
-                intent.putExtra(Note.class.getCanonicalName(), recyclerAdapter.getItem(position));
-                startActivityForResult(intent, REQUEST_CODE);
                 break;
             default:
         }
@@ -371,11 +377,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-    private void toggleSelection(int position) {
-        recyclerAdapter.toggleSelection(position);
-        actionMode.setTitle(String.valueOf(recyclerAdapter.getSelectedItemCount()));
-    }
-
     private GestureDetector.SimpleOnGestureListener gestureListener = new GestureDetector.SimpleOnGestureListener() {
         @Override
         public boolean onSingleTapConfirmed(MotionEvent e) {
@@ -387,12 +388,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void onLongPress(MotionEvent e) {
             final View view = recyclerView.findChildViewUnder(e.getX(), e.getY());
-            if (actionMode != null) {
-                return;
+            if (actionMode == null) {
+                actionMode = startActionMode(MainActivity.this);
             }
-            actionMode = startActionMode(MainActivity.this);
-            final int position = recyclerView.getChildPosition(view);
-            toggleSelection(position);
+            onClick(view);
             super.onLongPress(e);
         }
     };
