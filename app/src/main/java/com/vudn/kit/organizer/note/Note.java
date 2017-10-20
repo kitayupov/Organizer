@@ -54,8 +54,8 @@ public class Note implements Parcelable {
         return isCompleted;
     }
 
-    public void setCompleted() {
-        isCompleted = true;
+    public void setCompleted(boolean isCompleted) {
+        this.isCompleted = isCompleted;
     }
 
     public Note copy() {

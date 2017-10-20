@@ -21,6 +21,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     private View.OnClickListener clickListener;
     private View.OnLongClickListener longClickListener;
+    private OnCompletedStateChangeListener stateChangeListener;
 
     public RecyclerAdapter(ArrayList<Note> arrayList) {
         this.arrayList = arrayList;
@@ -33,6 +34,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     public void setOnLongClickListener(View.OnLongClickListener longClickListener) {
         this.longClickListener = longClickListener;
+    }
+
+    public void setOnCompletedStateChangeListener(OnCompletedStateChangeListener stateChangeListener) {
+        this.stateChangeListener = stateChangeListener;
     }
 
     @Override
@@ -51,6 +56,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         holder.cardView.setOnLongClickListener(longClickListener);
         holder.mainLayout.setActivated(selectedItems.get(position));
         holder.completedCheckBox.setChecked(item.isCompleted());
+        holder.completedCheckBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stateChangeListener.onCompletedStateChanged(position);
+            }
+        });
     }
 
     @Override
@@ -102,5 +113,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             mainLayout = view.findViewById(R.id.cardContent);
             completedCheckBox = view.findViewById(R.id.completedCheckbox);
         }
+    }
+
+    public interface OnCompletedStateChangeListener {
+        void onCompletedStateChanged(int position);
     }
 }

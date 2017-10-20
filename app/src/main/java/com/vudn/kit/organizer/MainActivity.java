@@ -30,7 +30,8 @@ import com.vudn.kit.organizer.view.SpacesItemDecoration;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements
-        View.OnClickListener, View.OnLongClickListener, ActionMode.Callback {
+        View.OnClickListener, View.OnLongClickListener, ActionMode.Callback,
+        RecyclerAdapter.OnCompletedStateChangeListener {
 
     public static final String POSITION = "position";
     public static final int DEFAULT_POSITION = -1;
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements
         recyclerAdapter = new RecyclerAdapter(arrayList);
         recyclerAdapter.setOnClickListener(this);
         recyclerAdapter.setOnLongClickListener(this);
+        recyclerAdapter.setOnCompletedStateChangeListener(this);
     }
 
     private void initFloatingButtons() {
@@ -110,36 +112,6 @@ public class MainActivity extends AppCompatActivity implements
             } while (cursor.moveToNext());
         }
         cursor.close();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE && data != null) {
-            getNote(data);
-        }
     }
 
     private void getNote(@NonNull Intent data) {
@@ -221,6 +193,106 @@ public class MainActivity extends AppCompatActivity implements
         changeInsertButtonColor(R.color.colorAccent);
     }
 
+    private void showDeleteAlertDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_delete_title)
+                .setMessage(R.string.dialog_delete_message)
+                .setPositiveButton(R.string.button_yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteSelectedNotes();
+                        releaseActionMode();
+                    }
+                })
+                .setNegativeButton(R.string.button_no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        releaseActionMode();
+                    }
+                })
+                .create()
+                .show();
+    }
+
+    private void deleteSelectedNotes() {
+        final SQLiteDatabase database = dbHelper.getWritableDatabase();
+        for (Integer position : recyclerAdapter.getSelectedItems()) {
+            final Note note = recyclerAdapter.getItem(position);
+            database.delete(NoteDBHelper.TABLE_NAME, NoteDBHelper.WHERE_CLAUSE, getWhereArgs(note));
+            arrayList.remove(note);
+        }
+        recyclerAdapter.notifyDataSetChanged();
+    }
+
+    private void showCompleteAlertDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.dialog_completed_title)
+                .setMessage(R.string.dialog_completed_message)
+                .setPositiveButton(R.string.button_yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        completeSelectedNotes();
+                        releaseActionMode();
+                    }
+                })
+                .setNegativeButton(R.string.button_no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        releaseActionMode();
+                    }
+                })
+                .create()
+                .show();
+    }
+
+    private void completeSelectedNotes() {
+        final SQLiteDatabase database = dbHelper.getWritableDatabase();
+        final ArrayList<Integer> selectedItems = recyclerAdapter.getSelectedItems();
+        for (Integer position : selectedItems) {
+            final Note copy = arrayList.get(position).copy();
+            copy.setCompleted(true);
+            copy.setUpdated();
+            updateNote(position, copy, database);
+        }
+        recyclerAdapter.notifyDataSetChanged();
+    }
+
+    private void releaseActionMode() {
+        if (actionMode != null) {
+            actionMode.finish();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK && requestCode == REQUEST_CODE && data != null) {
+            getNote(data);
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -290,73 +362,13 @@ public class MainActivity extends AppCompatActivity implements
         actionMode = null;
     }
 
-    private void showDeleteAlertDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.dialog_delete_title)
-                .setMessage(R.string.dialog_delete_message)
-                .setPositiveButton(R.string.button_yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        deleteSelectedNotes();
-                        releaseActionMode();
-                    }
-                })
-                .setNegativeButton(R.string.button_no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        releaseActionMode();
-                    }
-                })
-                .create()
-                .show();
-    }
-
-    private void deleteSelectedNotes() {
+    @Override
+    public void onCompletedStateChanged(int position) {
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
-        for (Integer position : recyclerAdapter.getSelectedItems()) {
-            final Note note = recyclerAdapter.getItem(position);
-            database.delete(NoteDBHelper.TABLE_NAME, NoteDBHelper.WHERE_CLAUSE, getWhereArgs(note));
-            arrayList.remove(note);
-        }
+        final Note copy = arrayList.get(position).copy();
+        copy.setCompleted(!copy.isCompleted());
+        copy.setUpdated();
+        updateNote(position, copy, database);
         recyclerAdapter.notifyDataSetChanged();
-    }
-
-    private void showCompleteAlertDialog() {
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.dialog_completed_title)
-                .setMessage(R.string.dialog_completed_message)
-                .setPositiveButton(R.string.button_yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        completeSelectedNotes();
-                        releaseActionMode();
-                    }
-                })
-                .setNegativeButton(R.string.button_no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        releaseActionMode();
-                    }
-                })
-                .create()
-                .show();
-    }
-
-    private void completeSelectedNotes() {
-        final SQLiteDatabase database = dbHelper.getWritableDatabase();
-        final ArrayList<Integer> selectedItems = recyclerAdapter.getSelectedItems();
-        for (Integer position : selectedItems) {
-            final Note copy = arrayList.get(position).copy();
-            copy.setCompleted();
-            copy.setUpdated();
-            updateNote(position, copy, database);
-        }
-        recyclerAdapter.notifyDataSetChanged();
-    }
-
-    private void releaseActionMode() {
-        if (actionMode != null) {
-            actionMode.finish();
-        }
     }
 }
