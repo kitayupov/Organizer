@@ -14,6 +14,7 @@ import java.util.Date;
 
 public class EditorActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private EditText nameEditText;
     private EditText bodyEditText;
     private CheckBox completedCheckBox;
     private int position;
@@ -30,7 +31,8 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void initControls() {
-        bodyEditText = (EditText) findViewById(R.id.textInputEditText);
+        nameEditText = (EditText) findViewById(R.id.nameEditText);
+        bodyEditText = (EditText) findViewById(R.id.bodyEditText);
         completedCheckBox = ((CheckBox) findViewById(R.id.completedCheckBox));
     }
 
@@ -42,6 +44,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         position = getIntent().getIntExtra(MainActivity.POSITION, MainActivity.DEFAULT_POSITION);
         final Note note = getIntent().getParcelableExtra(Note.class.getCanonicalName());
         if (note != null) {
+            nameEditText.setText(note.getName());
             bodyEditText.setText(note.getBody());
             completedCheckBox.setChecked(note.isCompleted());
             timeCreated = note.getTimeCreated();
@@ -69,8 +72,9 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
     @NonNull
     private Note getNote() {
+        final String name = nameEditText.getText().toString();
         final String body = bodyEditText.getText().toString();
         final boolean completed = completedCheckBox.isChecked();
-        return new Note(body, timeCreated, new Date().getTime(), completed);
+        return new Note(name, body, timeCreated, new Date().getTime(), completed);
     }
 }

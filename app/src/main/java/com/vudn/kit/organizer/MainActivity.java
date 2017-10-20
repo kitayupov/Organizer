@@ -93,16 +93,18 @@ public class MainActivity extends AppCompatActivity implements
         final SQLiteDatabase database = dbHelper.getReadableDatabase();
         final Cursor cursor = database.query(NoteDBHelper.TABLE_NAME, null, null, null, null, null, null);
         if (cursor.moveToFirst()) {
+            final int nameIndex = cursor.getColumnIndex(NoteDBHelper.NAME);
             final int bodyIndex = cursor.getColumnIndex(NoteDBHelper.BODY);
             final int createdIndex = cursor.getColumnIndex(NoteDBHelper.TIME_CREATED);
             final int updatedIndex = cursor.getColumnIndex(NoteDBHelper.TIME_UPDATED);
             final int completedIndex = cursor.getColumnIndex(NoteDBHelper.COMPLETED);
             do {
+                final String name = cursor.getString(nameIndex);
                 final String body = cursor.getString(bodyIndex);
                 final long timeCreated = cursor.getLong(createdIndex);
                 final long timeUpdated = cursor.getLong(updatedIndex);
                 final boolean completed = cursor.getInt(completedIndex) == 1;
-                final Note note = new Note(body, timeCreated, timeUpdated, completed);
+                final Note note = new Note(name, body, timeCreated, timeUpdated, completed);
                 recyclerAdapter.addNote(note);
             } while (cursor.moveToNext());
         }
@@ -139,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements
     @NonNull
     private ContentValues getContentValues(Note note) {
         final ContentValues values = new ContentValues();
+        values.put(NoteDBHelper.NAME, note.getName());
         values.put(NoteDBHelper.BODY, note.getBody());
         values.put(NoteDBHelper.TIME_CREATED, note.getTimeCreated());
         values.put(NoteDBHelper.TIME_UPDATED, note.getTimeUpdated());
@@ -148,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @NonNull
     private String[] getWhereArgs(Note note) {
-        return new String[]{note.getBody(), String.valueOf(note.getTimeCreated()),
+        return new String[]{note.getName(), note.getBody(), String.valueOf(note.getTimeCreated()),
                 String.valueOf(note.getTimeUpdated()), String.valueOf(note.isCompleted() ? 1 : 0)};
     }
 

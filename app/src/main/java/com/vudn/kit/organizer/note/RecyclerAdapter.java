@@ -50,7 +50,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         final Note item = arrayList.get(position);
-        holder.nameTextView.setText(item.getBody());
+        holder.nameTextView.setText(item.getName());
         holder.nameTextView.setTextColor(item.isCompleted() ? Color.LTGRAY : Color.DKGRAY);
         holder.cardView.setOnClickListener(clickListener);
         holder.cardView.setOnLongClickListener(longClickListener);

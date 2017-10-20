@@ -7,12 +7,14 @@ import java.util.Date;
 
 public class Note implements Parcelable {
 
+    private String name;
     private String body;
     private long timeCreated;
     private long timeUpdated;
     private boolean isCompleted;
 
-    public Note(String body, long timeCreated, long timeUpdated, boolean isCompleted) {
+    public Note(String name, String body, long timeCreated, long timeUpdated, boolean isCompleted) {
+        this.name = name;
         this.body = body;
         this.timeCreated = timeCreated;
         this.timeUpdated = timeUpdated;
@@ -20,6 +22,7 @@ public class Note implements Parcelable {
     }
 
     private Note(Parcel in) {
+        name = in.readString();
         body = in.readString();
         timeCreated = in.readLong();
         timeUpdated = in.readLong();
@@ -37,6 +40,10 @@ public class Note implements Parcelable {
             return new Note[size];
         }
     };
+
+    public String getName() {
+        return name;
+    }
 
     public String getBody() {
         return body;
@@ -59,7 +66,7 @@ public class Note implements Parcelable {
     }
 
     public Note copy() {
-        return new Note(body, timeCreated, timeUpdated, isCompleted);
+        return new Note(name, body, timeCreated, timeUpdated, isCompleted);
     }
 
     public void setUpdated() {
@@ -69,7 +76,8 @@ public class Note implements Parcelable {
     @Override
     public String toString() {
         return "Note{" +
-                "body='" + body + '\'' +
+                "name='" + name + '\'' +
+                ", body='" + body + '\'' +
                 ", timeCreated=" + timeCreated +
                 ", timeUpdated=" + timeUpdated +
                 ", isCompleted=" + isCompleted +
@@ -83,6 +91,7 @@ public class Note implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
         dest.writeString(body);
         dest.writeLong(timeCreated);
         dest.writeLong(timeUpdated);

@@ -10,16 +10,17 @@ import java.util.Date;
 public class NoteDBHelper extends SQLiteOpenHelper {
 
     public static final String TABLE_NAME = "Notes";
+    public static final String NAME = "name";
     public static final String BODY = "body";
     public static final String TIME_CREATED = "timeCreated";
     public static final String TIME_UPDATED = "timeUpdated";
     public static final String COMPLETED = "completed";
 
-    public static final String WHERE_CLAUSE = BODY + "=? and " + TIME_CREATED + "=? and "
+    public static final String WHERE_CLAUSE = NAME + "=? and " + BODY + "=? and " + TIME_CREATED + "=? and "
             + TIME_UPDATED + "=? and " + COMPLETED + "=?";
 
     private static final String NOTES_DB = "notes.db";
-    private static final int VERSION = 3;
+    private static final int VERSION = 4;
 
     public NoteDBHelper(Context context) {
         this(context, NOTES_DB, null, VERSION);
@@ -58,6 +59,14 @@ public class NoteDBHelper extends SQLiteOpenHelper {
                 );
                 onUpgrade(db, oldVersion + 1, newVersion);
                 break;
+            case 3:
+                db.execSQL(
+                        String.format(
+                                "alter table %s add column %s text default %s",
+                                TABLE_NAME, NAME, "Task")
+                );
+                onUpgrade(db, oldVersion + 1, newVersion);
+                break;
             default:
         }
     }
@@ -66,8 +75,8 @@ public class NoteDBHelper extends SQLiteOpenHelper {
         static final String CREATE_QUERY =
                 String.format(
                         "create table %s (%s integer primary key autoincrement, " +
-                                "%s text, %s numeric, %s numeric, %s numeric)",
-                        TABLE_NAME, _ID, BODY, TIME_CREATED, TIME_UPDATED, COMPLETED
+                                "%s text, %s text, %s numeric, %s numeric, %s numeric)",
+                        TABLE_NAME, _ID, NAME, BODY, TIME_CREATED, TIME_UPDATED, COMPLETED
                 );
     }
 }
