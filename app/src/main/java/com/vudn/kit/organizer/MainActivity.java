@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements
         new Footer(this).setInsertCallback(new Footer.InsertCallback() {
             @Override
             public void perform(Note note) {
-                System.out.println(note.toString());
+                insertNote(note);
             }
         });
     }
@@ -147,6 +147,12 @@ public class MainActivity extends AppCompatActivity implements
         final ContentValues values = getContentValues(note);
         database.update(NoteDBHelper.TABLE_NAME, values, NoteDBHelper.WHERE_CLAUSE, getWhereArgs(oldNote));
         recyclerAdapter.addNote(position, note);
+    }
+
+    private void insertNote(Note note) {
+        final SQLiteDatabase database = dbHelper.getWritableDatabase();
+        insertNote(note, database);
+        recyclerAdapter.notifyDataSetChanged();
     }
 
     @NonNull

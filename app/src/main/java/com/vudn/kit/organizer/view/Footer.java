@@ -8,8 +8,6 @@ import android.widget.EditText;
 import com.vudn.kit.organizer.R;
 import com.vudn.kit.organizer.note.Note;
 
-import java.util.Date;
-
 public class Footer implements View.OnClickListener {
 
     private static final String TAG = Footer.class.getSimpleName();
@@ -38,10 +36,9 @@ public class Footer implements View.OnClickListener {
     }
 
     private void insertNote() {
-        if (insertCallback != null) {
-            final long currentTime = new Date().getTime();
-            final String name = editText.getText().toString();
-            insertCallback.perform(new Note(name, "", currentTime, currentTime, false));
+        final String name = editText.getText().toString();
+        if (insertCallback != null && !name.equals("")) {
+            insertCallback.perform(new Note(name));
         }
         editText.setText(null);
         editText.clearFocus();
