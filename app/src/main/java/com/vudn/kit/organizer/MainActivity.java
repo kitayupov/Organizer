@@ -25,6 +25,7 @@ import android.view.animation.OvershootInterpolator;
 import com.vudn.kit.organizer.note.Note;
 import com.vudn.kit.organizer.note.NoteDBHelper;
 import com.vudn.kit.organizer.note.RecyclerAdapter;
+import com.vudn.kit.organizer.view.Footer;
 import com.vudn.kit.organizer.view.SpacesItemDecoration;
 
 public class MainActivity extends AppCompatActivity implements
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements
         initToolbar();
         initNoteList();
         initListView();
+        initFooter();
         initFloatingButtons();
         setClickListeners();
         readDatabase();
@@ -80,6 +82,15 @@ public class MainActivity extends AppCompatActivity implements
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new SpacesItemDecoration(16));
         recyclerView.setAdapter(recyclerAdapter);
+    }
+
+    private void initFooter() {
+        new Footer(this).setInsertCallback(new Footer.InsertCallback() {
+            @Override
+            public void perform(Note note) {
+                System.out.println(note.toString());
+            }
+        });
     }
 
     private void setClickListeners() {
