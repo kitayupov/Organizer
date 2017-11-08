@@ -36,6 +36,7 @@
             android:layout_below="@+id/delete_fab"
             android:layout_marginBottom="@dimen/fab_margin"
             android:layout_marginEnd="@dimen/fab_margin"
+            android:visibility="invisible"
             android:src="@drawable/vector_plus" />
 
         <android.support.design.widget.FloatingActionButton
