@@ -10,7 +10,10 @@ import android.widget.EditText;
 import com.vudn.kit.organizer.R;
 import com.vudn.kit.organizer.note.Note;
 
-public class Footer implements View.OnClickListener {
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener;
+
+public class Footer implements View.OnClickListener, KeyboardVisibilityEventListener {
 
     private static final String TAG = Footer.class.getSimpleName();
 
@@ -22,6 +25,7 @@ public class Footer implements View.OnClickListener {
         this.activity = activity;
         editText = activity.findViewById(R.id.editText);
         activity.findViewById(R.id.insertButton).setOnClickListener(this);
+        KeyboardVisibilityEvent.registerEventListener(activity, this);
     }
 
     public void setInsertCallback(InsertCallback insertCallback) {
@@ -52,6 +56,13 @@ public class Footer implements View.OnClickListener {
         editText.clearFocus();
         ((InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE))
                 .hideSoftInputFromWindow(editText.getWindowToken(), 0);
+    }
+
+    @Override
+    public void onVisibilityChanged(boolean isOpen) {
+        if (!isOpen) {
+            clearEditText();
+        }
     }
 
     public interface InsertCallback {
