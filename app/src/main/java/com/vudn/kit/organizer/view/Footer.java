@@ -1,8 +1,10 @@
 package com.vudn.kit.organizer.view;
 
 import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.vudn.kit.organizer.R;
@@ -12,10 +14,12 @@ public class Footer implements View.OnClickListener {
 
     private static final String TAG = Footer.class.getSimpleName();
 
+    private final Activity activity;
     private final EditText editText;
     private InsertCallback insertCallback;
 
     public Footer(Activity activity) {
+        this.activity = activity;
         editText = activity.findViewById(R.id.editText);
         activity.findViewById(R.id.insertButton).setOnClickListener(this);
     }
@@ -40,8 +44,14 @@ public class Footer implements View.OnClickListener {
         if (insertCallback != null && !name.equals("")) {
             insertCallback.perform(new Note(name));
         }
+        clearEditText();
+    }
+
+    private void clearEditText() {
         editText.setText(null);
         editText.clearFocus();
+        ((InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE))
+                .hideSoftInputFromWindow(editText.getWindowToken(), 0);
     }
 
     public interface InsertCallback {
