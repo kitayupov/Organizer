@@ -44,7 +44,7 @@ public class Footer implements View.OnClickListener, KeyboardVisibilityEventList
     }
 
     private void insertNote() {
-        final String name = editText.getText().toString();
+        final String name = editText.getText().toString().trim();
         if (insertCallback != null && !name.equals("")) {
             insertCallback.perform(new Note(name));
         }
