@@ -84,8 +84,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     private void setViewHolderContent(ViewHolder holder, Note item) {
         holder.nameTextView.setText(item.getName());
-        holder.bodyTextView.setText(item.getBody());
+        setBodyText(holder, item.getBody());
         setDateTarget(holder, item.getDateTarget());
+    }
+
+    private void setBodyText(ViewHolder holder, String body) {
+        if (!body.equals("")) {
+            holder.bodyTextView.setText(body);
+        } else {
+            holder.bodyTextView.setVisibility(View.GONE);
+        }
     }
 
     private void setDateTarget(ViewHolder holder, long dateTarget) {
