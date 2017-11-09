@@ -160,15 +160,18 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     public void addNote(Note note) {
         arrayList.add(note);
+        notifyDataSetChanged();
     }
 
     public void addNote(int position, Note note) {
         arrayList.remove(position);
         arrayList.add(position, note);
+        notifyItemChanged(position);
     }
 
     public void removeNote(Note note) {
         arrayList.remove(note);
+        notifyDataSetChanged();
     }
 
     public void toggleExpanded(int position) {

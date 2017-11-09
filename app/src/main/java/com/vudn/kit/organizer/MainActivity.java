@@ -99,7 +99,6 @@ public class MainActivity extends AppCompatActivity implements
                 final long timeUpdated = cursor.getLong(updatedIndex);
                 final boolean completed = cursor.getInt(completedIndex) == 1;
                 final Note note = new Note(name, body, dateTarget, timeCreated, timeUpdated, completed);
-                System.out.println(note);
                 recyclerAdapter.addNote(note);
             } while (cursor.moveToNext());
         }
@@ -107,36 +106,26 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void getNote(@NonNull Intent data) {
-        int position = data.getIntExtra(POSITION, DEFAULT_POSITION);
-        final int count = recyclerAdapter.getItemCount();
-        position = (position >= 0 && position < count) ? position : count;
+        final int position = data.getIntExtra(POSITION, DEFAULT_POSITION);
         final Note note = data.getParcelableExtra(Note.class.getCanonicalName());
-        final SQLiteDatabase database = dbHelper.getWritableDatabase();
-        if (position == count) {
-            insertNote(note, database);
-        } else {
-            updateNote(position, note, database);
-        }
-        recyclerAdapter.notifyDataSetChanged();
+        updateNote(position, note);
     }
 
-    private void insertNote(Note note, SQLiteDatabase database) {
-        final ContentValues values = getContentValues(note);
-        database.insert(NoteDBHelper.TABLE_NAME, null, values);
-        recyclerAdapter.addNote(note);
-    }
-
-    private void updateNote(int position, Note note, SQLiteDatabase database) {
+    private void updateNote(int position, Note note) {
         final Note oldNote = recyclerAdapter.getItem(position);
-        final ContentValues values = getContentValues(note);
-        database.update(NoteDBHelper.TABLE_NAME, values, NoteDBHelper.WHERE_CLAUSE, getWhereArgs(oldNote));
-        recyclerAdapter.addNote(position, note);
+        if (!oldNote.equals(note)) {
+            final SQLiteDatabase database = dbHelper.getWritableDatabase();
+            final ContentValues values = getContentValues(note);
+            database.update(NoteDBHelper.TABLE_NAME, values, NoteDBHelper.WHERE_CLAUSE, getWhereArgs(oldNote));
+            recyclerAdapter.addNote(position, note);
+        }
     }
 
     private void insertNote(Note note) {
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
-        insertNote(note, database);
-        recyclerAdapter.notifyDataSetChanged();
+        final ContentValues values = getContentValues(note);
+        database.insert(NoteDBHelper.TABLE_NAME, null, values);
+        recyclerAdapter.addNote(note);
     }
 
     @NonNull
@@ -183,7 +172,6 @@ public class MainActivity extends AppCompatActivity implements
             database.delete(NoteDBHelper.TABLE_NAME, NoteDBHelper.WHERE_CLAUSE, getWhereArgs(note));
             recyclerAdapter.removeNote(note);
         }
-        recyclerAdapter.notifyDataSetChanged();
     }
 
     private void showCompleteAlertDialog() {
@@ -208,14 +196,12 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void completeSelectedNotes() {
-        final SQLiteDatabase database = dbHelper.getWritableDatabase();
         for (Integer position : recyclerAdapter.getSelectedPositions()) {
             final Note copy = recyclerAdapter.getItem(position).copy();
             copy.setCompleted(true);
             copy.setUpdated();
-            updateNote(position, copy, database);
+            updateNote(position, copy);
         }
-        recyclerAdapter.notifyDataSetChanged();
     }
 
     private void releaseActionMode() {
@@ -319,12 +305,10 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onCompletedStateChanged(int position) {
-        final SQLiteDatabase database = dbHelper.getWritableDatabase();
         final Note copy = recyclerAdapter.getItem(position).copy();
         copy.setCompleted(!copy.isCompleted());
         copy.setUpdated();
-        updateNote(position, copy, database);
-        recyclerAdapter.notifyDataSetChanged();
+        updateNote(position, copy);
     }
 
     @Override
