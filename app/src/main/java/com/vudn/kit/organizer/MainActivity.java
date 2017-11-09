@@ -141,8 +141,9 @@ public class MainActivity extends AppCompatActivity implements
 
     @NonNull
     private String[] getWhereArgs(Note note) {
-        return new String[]{note.getName(), note.getBody(), String.valueOf(note.getTimeCreated()),
-                String.valueOf(note.getTimeUpdated()), String.valueOf(note.isCompleted() ? 1 : 0)};
+        return new String[]{note.getName(), note.getBody(), String.valueOf(note.getDateTarget()),
+                String.valueOf(note.getTimeCreated()), String.valueOf(note.getTimeUpdated()),
+                String.valueOf(note.isCompleted() ? 1 : 0)};
     }
 
     private void showDeleteAlertDialog() {
