@@ -185,7 +185,6 @@ public class MainActivity extends AppCompatActivity implements
         for (Integer position : recyclerAdapter.getSelectedPositions()) {
             final Note copy = recyclerAdapter.getItem(position).copy();
             copy.setCompleted(true);
-            copy.setUpdated();
             updateNote(position, copy);
         }
     }
@@ -193,6 +192,7 @@ public class MainActivity extends AppCompatActivity implements
     private void updateNote(int position, Note note) {
         final Note oldNote = recyclerAdapter.getItem(position);
         if (!oldNote.equals(note)) {
+            note.setUpdated();
             final SQLiteDatabase database = dbHelper.getWritableDatabase();
             final ContentValues values = getContentValues(note);
             database.update(NoteDBHelper.TABLE_NAME, values, NoteDBHelper.WHERE_CLAUSE, getWhereArgs(oldNote));
@@ -309,7 +309,6 @@ public class MainActivity extends AppCompatActivity implements
     public void onCompletedStateChanged(int position) {
         final Note copy = recyclerAdapter.getItem(position).copy();
         copy.setCompleted(!copy.isCompleted());
-        copy.setUpdated();
         updateNote(position, copy);
     }
 

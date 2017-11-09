@@ -87,7 +87,6 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         copy.setBody(bodyEditText.getText().toString());
         copy.setCompleted(completedCheckBox.isChecked());
         if (!note.equals(copy)) {
-            copy.setUpdated();
             return copy;
         } else {
             return note;
