@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +26,9 @@ import com.vudn.kit.organizer.view.SpacesItemDecoration;
 
 public class MainActivity extends AppCompatActivity implements
         View.OnClickListener, View.OnLongClickListener, ActionMode.Callback,
-        RecyclerAdapter.OnCompletedStateChangeListener {
+        RecyclerAdapter.OnCompletedStateChangeListener, RecyclerAdapter.OnEditButtonClickListener {
+
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     public static final String POSITION = "position";
     public static final int DEFAULT_POSITION = -1;
@@ -58,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements
         recyclerAdapter.setOnClickListener(this);
         recyclerAdapter.setOnLongClickListener(this);
         recyclerAdapter.setOnCompletedStateChangeListener(this);
+        recyclerAdapter.setOnEditButtonClickListener(this);
     }
 
     private void initListView() {
@@ -248,10 +252,10 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
+    public void onClick(View view) {
+        switch (view.getId()) {
             case R.id.cardView:
-                final int position = recyclerView.getChildPosition(v);
+                final int position = recyclerView.getChildPosition(view);
                 if (actionMode != null) {
                     recyclerAdapter.toggleSelected(position);
                     final int count = recyclerAdapter.getSelectedItemsCount();
@@ -265,6 +269,7 @@ public class MainActivity extends AppCompatActivity implements
                 }
                 break;
             default:
+                Log.e(TAG, "Not implemented yet: " + view.getId());
         }
     }
 
@@ -317,5 +322,13 @@ public class MainActivity extends AppCompatActivity implements
         copy.setUpdated();
         updateNote(position, copy, database);
         recyclerAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onEditButtonClicked(int position) {
+        final Intent intent = new Intent(getApplicationContext(), EditorActivity.class);
+        intent.putExtra(POSITION, position);
+        intent.putExtra(Note.class.getCanonicalName(), recyclerAdapter.getItem(position));
+        startActivityForResult(intent, REQUEST_CODE);
     }
 }

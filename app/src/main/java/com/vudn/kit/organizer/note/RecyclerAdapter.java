@@ -23,6 +23,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     private View.OnClickListener clickListener;
     private View.OnLongClickListener longClickListener;
     private OnCompletedStateChangeListener stateChangeListener;
+    private OnEditButtonClickListener editButtonClickListener;
 
     public RecyclerAdapter() {
         this.arrayList = new ArrayList<>();
@@ -42,6 +43,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         this.stateChangeListener = stateChangeListener;
     }
 
+    public void setOnEditButtonClickListener(OnEditButtonClickListener editButtonClickListener) {
+        this.editButtonClickListener = editButtonClickListener;
+    }
+
     @Override
     public RecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         final LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
@@ -50,7 +55,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         final Note item = arrayList.get(position);
         holder.nameTextView.setText(item.getName());
         holder.bodyTextView.setText(item.getBody());
@@ -69,6 +74,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             }
         });
         holder.expandedContent.setVisibility(expandedItems.get(position) ? View.VISIBLE : View.GONE);
+        holder.editImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (editButtonClickListener != null) {
+                    editButtonClickListener.onEditButtonClicked(holder.getAdapterPosition());
+                }
+            }
+        });
     }
 
     @Override
@@ -144,6 +157,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         private final TextView bodyTextView;
         private final CompoundButton completedCheckBox;
         private final View expandedContent;
+        private final View editImageView;
 
         ViewHolder(View view) {
             super(view);
@@ -153,10 +167,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             bodyTextView = view.findViewById(R.id.bodyTextView);
             completedCheckBox = view.findViewById(R.id.completedCheckbox);
             expandedContent = view.findViewById(R.id.expandedContentLayout);
+            editImageView = view.findViewById(R.id.editImageView);
         }
     }
 
     public interface OnCompletedStateChangeListener {
         void onCompletedStateChanged(int position);
+    }
+
+    public interface OnEditButtonClickListener {
+        void onEditButtonClicked(int position);
     }
 }
