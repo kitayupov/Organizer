@@ -89,19 +89,23 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     }
 
     private void setBodyText(ViewHolder holder, String body) {
-        if (!body.equals("")) {
+        final boolean isBodyEmpty = body.equals(Note.DEFAULT_BODY);
+        if (!isBodyEmpty) {
             holder.bodyTextView.setText(body);
-        } else {
-            holder.bodyTextView.setVisibility(View.GONE);
         }
+        holder.bodyTextView.setVisibility(getVisibility(isBodyEmpty));
     }
 
     private void setDateTarget(ViewHolder holder, long dateTarget) {
-        if (dateTarget != -1) {
+        final boolean isDateEmpty = (dateTarget == Note.DEFAULT_DATE_TARGET);
+        if (!isDateEmpty) {
             holder.dateTargetTextView.setText(DateUtil.getDateString(dateTarget));
-        } else {
-            holder.dateTargetTextView.setVisibility(View.GONE);
         }
+        holder.dateTargetTextView.setVisibility(getVisibility(isDateEmpty));
+    }
+
+    private int getVisibility(boolean isEmpty) {
+        return isEmpty ? View.GONE : View.VISIBLE;
     }
 
     private void setCompletedState(ViewHolder holder, boolean completed) {

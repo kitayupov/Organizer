@@ -8,6 +8,12 @@ import java.util.Date;
 
 public class Note implements Parcelable {
 
+    static final String DEFAULT_BODY = "";
+    static final int DEFAULT_DATE_TARGET = -1;
+
+    private static final boolean DEFAULT_COMPLETED_STATE = false;
+    private static final long CURRENT_TIME = new Date().getTime();
+
     private String name;
     private String body;
     private long dateTarget;
@@ -17,11 +23,11 @@ public class Note implements Parcelable {
 
     public Note(@NonNull String name) {
         this.name = name;
-        this.body = "";
-        this.dateTarget = -1;
-        this.timeCreated = new Date().getTime();
-        this.timeUpdated = new Date().getTime();
-        this.isCompleted = false;
+        this.body = DEFAULT_BODY;
+        this.dateTarget = DEFAULT_DATE_TARGET;
+        this.timeCreated = CURRENT_TIME;
+        this.timeUpdated = CURRENT_TIME;
+        this.isCompleted = DEFAULT_COMPLETED_STATE;
     }
 
     public Note(String name, String body, long dateTarget, long timeCreated, long timeUpdated, boolean isCompleted) {
