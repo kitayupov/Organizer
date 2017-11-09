@@ -87,16 +87,19 @@ public class MainActivity extends AppCompatActivity implements
         if (cursor.moveToFirst()) {
             final int nameIndex = cursor.getColumnIndex(NoteDBHelper.NAME);
             final int bodyIndex = cursor.getColumnIndex(NoteDBHelper.BODY);
+            final int dateTargetIndex = cursor.getColumnIndex(NoteDBHelper.DATE_TARGET);
             final int createdIndex = cursor.getColumnIndex(NoteDBHelper.TIME_CREATED);
             final int updatedIndex = cursor.getColumnIndex(NoteDBHelper.TIME_UPDATED);
             final int completedIndex = cursor.getColumnIndex(NoteDBHelper.COMPLETED);
             do {
                 final String name = cursor.getString(nameIndex);
                 final String body = cursor.getString(bodyIndex);
+                final long dateTarget = cursor.getLong(dateTargetIndex);
                 final long timeCreated = cursor.getLong(createdIndex);
                 final long timeUpdated = cursor.getLong(updatedIndex);
                 final boolean completed = cursor.getInt(completedIndex) == 1;
-                final Note note = new Note(name, body, -1, timeCreated, timeUpdated, completed);
+                final Note note = new Note(name, body, dateTarget, timeCreated, timeUpdated, completed);
+                System.out.println(note);
                 recyclerAdapter.addNote(note);
             } while (cursor.moveToNext());
         }
