@@ -11,6 +11,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.vudn.kit.organizer.R;
+import com.vudn.kit.organizer.util.DateUtil;
 
 import java.util.ArrayList;
 
@@ -57,14 +58,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final Note item = arrayList.get(position);
-        holder.nameTextView.setText(item.getName());
-        holder.bodyTextView.setText(item.getBody());
-        holder.nameTextView.setTextColor(item.isCompleted() ? Color.LTGRAY : Color.DKGRAY);
-        holder.bodyTextView.setTextColor(item.isCompleted() ? Color.LTGRAY : Color.DKGRAY);
+        setViewHolderContent(holder, item);
+        setCompletedState(holder, item.isCompleted());
         holder.cardView.setOnClickListener(clickListener);
         holder.cardView.setOnLongClickListener(longClickListener);
         holder.mainLayout.setActivated(selectedItems.get(position));
-        holder.completedCheckBox.setChecked(item.isCompleted());
         holder.completedCheckBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,6 +80,31 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                 }
             }
         });
+    }
+
+    private void setViewHolderContent(ViewHolder holder, Note item) {
+        holder.nameTextView.setText(item.getName());
+        holder.bodyTextView.setText(item.getBody());
+        setDateTarget(holder, item.getDateTarget());
+    }
+
+    private void setDateTarget(ViewHolder holder, long dateTarget) {
+        if (dateTarget != -1) {
+            holder.dateTargetTextView.setText(DateUtil.getDateString(dateTarget));
+        } else {
+            holder.dateTargetTextView.setVisibility(View.GONE);
+        }
+    }
+
+    private void setCompletedState(ViewHolder holder, boolean completed) {
+        holder.nameTextView.setTextColor(getCompletedStateColor(completed));
+        holder.bodyTextView.setTextColor(getCompletedStateColor(completed));
+        holder.dateTargetTextView.setTextColor(getCompletedStateColor(completed));
+        holder.completedCheckBox.setChecked(completed);
+    }
+
+    private int getCompletedStateColor(boolean completed) {
+        return completed ? Color.LTGRAY : Color.DKGRAY;
     }
 
     @Override
@@ -155,6 +178,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         private final CardView cardView;
         private final TextView nameTextView;
         private final TextView bodyTextView;
+        private final TextView dateTargetTextView;
         private final CompoundButton completedCheckBox;
         private final View expandedContent;
         private final View editImageView;
@@ -165,6 +189,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             mainLayout = view.findViewById(R.id.cardContent);
             nameTextView = view.findViewById(R.id.nameTextView);
             bodyTextView = view.findViewById(R.id.bodyTextView);
+            dateTargetTextView = view.findViewById(R.id.dateTargetTextView);
             completedCheckBox = view.findViewById(R.id.completedCheckbox);
             expandedContent = view.findViewById(R.id.expandedContentLayout);
             editImageView = view.findViewById(R.id.editImageView);
