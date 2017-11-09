@@ -12,8 +12,6 @@ import android.widget.TextView;
 import com.vudn.kit.organizer.note.Note;
 import com.vudn.kit.organizer.util.DateUtil;
 
-import java.util.Date;
-
 public class EditorActivity extends AppCompatActivity implements View.OnClickListener {
 
     private EditText nameEditText;
@@ -21,7 +19,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     private TextView dateTargetTextView;
     private CheckBox completedCheckBox;
     private int position;
-    private long timeCreated;
+    private Note note;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,16 +44,15 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
     private void getIntentData() {
         position = getIntent().getIntExtra(MainActivity.POSITION, MainActivity.DEFAULT_POSITION);
-        final Note note = getIntent().getParcelableExtra(Note.class.getCanonicalName());
-        if (note != null) {
-            nameEditText.setText(note.getName());
-            bodyEditText.setText(note.getBody());
-            completedCheckBox.setChecked(note.isCompleted());
-            setDateTarget(note.getDateTarget());
-            timeCreated = note.getTimeCreated();
-        } else {
-            timeCreated = new Date().getTime();
-        }
+        note = getIntent().getParcelableExtra(Note.class.getCanonicalName());
+        setNoteContent();
+    }
+
+    private void setNoteContent() {
+        nameEditText.setText(note.getName());
+        bodyEditText.setText(note.getBody());
+        completedCheckBox.setChecked(note.isCompleted());
+        setDateTarget(note.getDateTarget());
     }
 
     private void setDateTarget(long dateTarget) {
@@ -85,9 +82,15 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
     @NonNull
     private Note getNote() {
-        final String name = nameEditText.getText().toString();
-        final String body = bodyEditText.getText().toString();
-        final boolean completed = completedCheckBox.isChecked();
-        return new Note(name, body, -1, timeCreated, new Date().getTime(), completed);
+        final Note copy = note.copy();
+        copy.setName(nameEditText.getText().toString());
+        copy.setBody(bodyEditText.getText().toString());
+        copy.setCompleted(completedCheckBox.isChecked());
+        if (!note.equals(copy)) {
+            copy.setUpdated();
+            return copy;
+        } else {
+            return note;
+        }
     }
 }

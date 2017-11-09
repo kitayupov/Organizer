@@ -78,6 +78,14 @@ public class Note implements Parcelable {
         return isCompleted;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
+    }
+
     public void setCompleted(boolean isCompleted) {
         this.isCompleted = isCompleted;
     }
@@ -115,5 +123,29 @@ public class Note implements Parcelable {
         dest.writeLong(timeCreated);
         dest.writeLong(timeUpdated);
         dest.writeInt(isCompleted ? 1 : 0);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Note note = (Note) o;
+
+        return (name != null ? name.equals(note.name) : note.name == null)
+                && (body != null ? body.equals(note.body) : note.body == null)
+                && dateTarget == note.dateTarget && isCompleted == note.isCompleted
+                && timeCreated == note.timeCreated && timeUpdated == note.timeUpdated;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (body != null ? body.hashCode() : 0);
+        result = 31 * result + (int) (dateTarget ^ (dateTarget >>> 32));
+        result = 31 * result + (int) (timeCreated ^ (timeCreated >>> 32));
+        result = 31 * result + (int) (timeUpdated ^ (timeUpdated >>> 32));
+        result = 31 * result + (isCompleted ? 1 : 0);
+        return result;
     }
 }
