@@ -7,8 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.vudn.kit.organizer.note.Note;
+import com.vudn.kit.organizer.util.DateUtil;
 
 import java.util.Date;
 
@@ -16,6 +18,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
     private EditText nameEditText;
     private EditText bodyEditText;
+    private TextView dateTargetTextView;
     private CheckBox completedCheckBox;
     private int position;
     private long timeCreated;
@@ -33,6 +36,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     private void initControls() {
         nameEditText = (EditText) findViewById(R.id.nameEditText);
         bodyEditText = (EditText) findViewById(R.id.bodyEditText);
+        dateTargetTextView = (TextView) findViewById(R.id.dateTargetTextView);
         completedCheckBox = ((CheckBox) findViewById(R.id.completedCheckBox));
     }
 
@@ -47,9 +51,16 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
             nameEditText.setText(note.getName());
             bodyEditText.setText(note.getBody());
             completedCheckBox.setChecked(note.isCompleted());
+            setDateTarget(note.getDateTarget());
             timeCreated = note.getTimeCreated();
         } else {
             timeCreated = new Date().getTime();
+        }
+    }
+
+    private void setDateTarget(long dateTarget) {
+        if (dateTarget != -1) {
+            dateTargetTextView.setText(DateUtil.getDateString(dateTarget));
         }
     }
 
