@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements
             final SQLiteDatabase database = dbHelper.getWritableDatabase();
             final ContentValues values = getContentValues(note);
             database.update(NoteDBHelper.TABLE_NAME, values, NoteDBHelper.WHERE_CLAUSE, getWhereArgs(oldNote));
-            recyclerAdapter.addNote(position, note);
+            recyclerAdapter.updateNote(position, note);
         }
     }
 
