@@ -4,11 +4,11 @@
     <item
         android:id="@+id/contextual_menu_complete"
         android:icon="@drawable/vector_complete"
-        android:title="Complete"
+        android:title="@string/menu_complete"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/contextual_menu_delete"
         android:icon="@drawable/vector_delete"
-        android:title="Delete"
+        android:title="@string/menu_delete"
         app:showAsAction="ifRoom" />
 </menu>

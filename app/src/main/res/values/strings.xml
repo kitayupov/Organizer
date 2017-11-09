@@ -10,4 +10,6 @@
     <string name="label_name">Name</string>
     <string name="label_body">Body</string>
     <string name="label_completed">Completed</string>
+    <string name="menu_complete">Complete</string>
+    <string name="menu_delete">Delete</string>
 </resources>
