@@ -8,4 +8,5 @@
     <color name="colorItemSelected">#C5CAE9</color>
     <color name="colorItemStroke">#90A4AE</color>
     <color name="colorBackground">#E0E0E0</color>
+    <color name="colorMenuItem">#FFFFFF</color>
 </resources>
