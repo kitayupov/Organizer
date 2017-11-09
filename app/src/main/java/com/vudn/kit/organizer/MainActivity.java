@@ -47,8 +47,8 @@ public class MainActivity extends AppCompatActivity implements
         initToolbar();
         initNoteList();
         initListView();
-        initFooter();
         readDatabase();
+        initFooter();
     }
 
     private void initToolbar() {
@@ -69,15 +69,6 @@ public class MainActivity extends AppCompatActivity implements
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.addItemDecoration(new SpacesItemDecoration(16));
         recyclerView.setAdapter(recyclerAdapter);
-    }
-
-    private void initFooter() {
-        new Footer(this).setInsertCallback(new Footer.InsertCallback() {
-            @Override
-            public void perform(Note note) {
-                insertNote(note);
-            }
-        });
     }
 
     private void readDatabase() {
@@ -105,20 +96,13 @@ public class MainActivity extends AppCompatActivity implements
         cursor.close();
     }
 
-    private void getNote(@NonNull Intent data) {
-        final int position = data.getIntExtra(POSITION, DEFAULT_POSITION);
-        final Note note = data.getParcelableExtra(Note.class.getCanonicalName());
-        updateNote(position, note);
-    }
-
-    private void updateNote(int position, Note note) {
-        final Note oldNote = recyclerAdapter.getItem(position);
-        if (!oldNote.equals(note)) {
-            final SQLiteDatabase database = dbHelper.getWritableDatabase();
-            final ContentValues values = getContentValues(note);
-            database.update(NoteDBHelper.TABLE_NAME, values, NoteDBHelper.WHERE_CLAUSE, getWhereArgs(oldNote));
-            recyclerAdapter.updateNote(position, note);
-        }
+    private void initFooter() {
+        new Footer(this).setInsertCallback(new Footer.InsertCallback() {
+            @Override
+            public void perform(Note note) {
+                insertNote(note);
+            }
+        });
     }
 
     private void insertNote(Note note) {
@@ -206,6 +190,16 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
+    private void updateNote(int position, Note note) {
+        final Note oldNote = recyclerAdapter.getItem(position);
+        if (!oldNote.equals(note)) {
+            final SQLiteDatabase database = dbHelper.getWritableDatabase();
+            final ContentValues values = getContentValues(note);
+            database.update(NoteDBHelper.TABLE_NAME, values, NoteDBHelper.WHERE_CLAUSE, getWhereArgs(oldNote));
+            recyclerAdapter.updateNote(position, note);
+        }
+    }
+
     private void releaseActionMode() {
         if (actionMode != null) {
             actionMode.finish();
@@ -240,6 +234,12 @@ public class MainActivity extends AppCompatActivity implements
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE && data != null) {
             getNote(data);
         }
+    }
+
+    private void getNote(@NonNull Intent data) {
+        final int position = data.getIntExtra(POSITION, DEFAULT_POSITION);
+        final Note note = data.getParcelableExtra(Note.class.getCanonicalName());
+        updateNote(position, note);
     }
 
     @Override
