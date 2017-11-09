@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements
                 final long timeCreated = cursor.getLong(createdIndex);
                 final long timeUpdated = cursor.getLong(updatedIndex);
                 final boolean completed = cursor.getInt(completedIndex) == 1;
-                final Note note = new Note(name, body, timeCreated, timeUpdated, completed);
+                final Note note = new Note(name, body, -1, timeCreated, timeUpdated, completed);
                 recyclerAdapter.addNote(note);
             } while (cursor.moveToNext());
         }

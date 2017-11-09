@@ -75,6 +75,6 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         final String name = nameEditText.getText().toString();
         final String body = bodyEditText.getText().toString();
         final boolean completed = completedCheckBox.isChecked();
-        return new Note(name, body, timeCreated, new Date().getTime(), completed);
+        return new Note(name, body, -1, timeCreated, new Date().getTime(), completed);
     }
 }
