@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements
         final ContentValues values = new ContentValues();
         values.put(NoteDBHelper.NAME, note.getName());
         values.put(NoteDBHelper.BODY, note.getBody());
+        values.put(NoteDBHelper.DATE_TARGET, note.getDateTarget());
         values.put(NoteDBHelper.TIME_CREATED, note.getTimeCreated());
         values.put(NoteDBHelper.TIME_UPDATED, note.getTimeUpdated());
         values.put(NoteDBHelper.COMPLETED, note.isCompleted() ? 1 : 0);
