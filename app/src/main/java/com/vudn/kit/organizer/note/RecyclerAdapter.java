@@ -152,7 +152,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             nameTextView = view.findViewById(R.id.nameTextView);
             bodyTextView = view.findViewById(R.id.bodyTextView);
             completedCheckBox = view.findViewById(R.id.completedCheckbox);
-            expandedContent = view.findViewById(R.id.expandedContent);
+            expandedContent = view.findViewById(R.id.expandedContentLayout);
         }
     }
 

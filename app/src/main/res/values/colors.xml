@@ -3,10 +3,10 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="colorCancel">#757575</color>
     <color name="colorItemDefault">#E8EAF6</color>
     <color name="colorItemSelected">#C5CAE9</color>
     <color name="colorItemStroke">#90A4AE</color>
     <color name="colorBackground">#E0E0E0</color>
     <color name="colorMenuItem">#FFFFFF</color>
+    <color name="colorEditIcon">#616161</color>
 </resources>
