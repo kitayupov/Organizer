@@ -2,6 +2,7 @@ package com.vudn.kit.organizer.note;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
 import java.util.Date;
 
@@ -12,6 +13,14 @@ public class Note implements Parcelable {
     private long timeCreated;
     private long timeUpdated;
     private boolean isCompleted;
+
+    public Note(@NonNull String name) {
+        this.name = name;
+        this.body = "";
+        this.timeCreated = new Date().getTime();
+        this.timeUpdated = new Date().getTime();
+        this.isCompleted = false;
+    }
 
     public Note(String name, String body, long timeCreated, long timeUpdated, boolean isCompleted) {
         this.name = name;

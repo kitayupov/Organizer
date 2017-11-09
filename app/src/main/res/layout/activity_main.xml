@@ -24,39 +24,4 @@
         android:id="@+id/include"
         layout="@layout/content_main" />
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end">
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/insert_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/delete_fab"
-            android:layout_marginBottom="@dimen/fab_margin"
-            android:layout_marginEnd="@dimen/fab_margin"
-            android:src="@drawable/vector_plus" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/delete_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/complete_fab"
-            android:layout_marginBottom="@dimen/fab_margin"
-            android:layout_marginEnd="@dimen/fab_margin"
-            android:visibility="invisible"
-            android:src="@drawable/vector_delete" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/complete_fab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/fab_margin"
-            android:layout_marginEnd="@dimen/fab_margin"
-            android:visibility="invisible"
-            android:src="@drawable/vector_complete" />
-
-    </RelativeLayout>
-
 </android.support.design.widget.CoordinatorLayout>
