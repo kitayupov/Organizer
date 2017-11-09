@@ -61,6 +61,8 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     private void setDateTarget(long dateTarget) {
         if (dateTarget != -1) {
             dateTargetTextView.setText(DateUtil.getDateString(dateTarget));
+        } else {
+            dateTargetTextView.setVisibility(View.GONE);
         }
     }
 
