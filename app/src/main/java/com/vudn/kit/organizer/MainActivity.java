@@ -360,12 +360,22 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+        mode.getMenuInflater().inflate(R.menu.menu_contextual, menu);
         return false;
     }
 
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        return false;
+        switch (item.getItemId()) {
+            case R.id.contextual_menu_complete:
+                showCompleteAlertDialog();
+                return true;
+            case R.id.contextual_menu_delete:
+                showDeleteAlertDialog();
+                return true;
+            default:
+                return false;
+        }
     }
 
     @Override
