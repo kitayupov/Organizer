@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements
                 final long timeUpdated = cursor.getLong(updatedIndex);
                 final boolean completed = cursor.getInt(completedIndex) == 1;
                 final Note note = new Note(name, body, dateTarget, timeCreated, timeUpdated, completed);
-                recyclerAdapter.addNote(note);
+                recyclerAdapter.insertNote(note);
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -125,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements
         final SQLiteDatabase database = dbHelper.getWritableDatabase();
         final ContentValues values = getContentValues(note);
         database.insert(NoteDBHelper.TABLE_NAME, null, values);
-        recyclerAdapter.addNote(note);
+        recyclerAdapter.insertNote(note);
     }
 
     @NonNull

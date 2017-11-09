@@ -162,7 +162,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         return items;
     }
 
-    public void addNote(Note note) {
+    public void insertNote(Note note) {
         arrayList.add(note);
         notifyDataSetChanged();
     }
