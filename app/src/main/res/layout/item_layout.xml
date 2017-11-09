@@ -37,15 +37,19 @@
                 android:id="@+id/completedCheckboxLayout"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:padding="4dp"
                 card_view:layout_constraintBottom_toBottomOf="@+id/nameTextView"
                 card_view:layout_constraintEnd_toEndOf="parent"
                 card_view:layout_constraintTop_toTopOf="@+id/nameTextView">
 
-                <CheckBox
+                <ToggleButton
                     android:id="@+id/completedCheckbox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center" />
+                    android:layout_gravity="center"
+                    android:background="@drawable/checkbox_selector"
+                    android:textOff=""
+                    android:textOn="" />
 
             </FrameLayout>
 

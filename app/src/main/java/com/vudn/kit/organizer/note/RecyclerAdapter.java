@@ -7,7 +7,7 @@ import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.vudn.kit.organizer.R;
@@ -142,7 +142,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         private final CardView cardView;
         private final TextView nameTextView;
         private final TextView bodyTextView;
-        private final CheckBox completedCheckBox;
+        private final CompoundButton completedCheckBox;
         private final View expandedContent;
 
         ViewHolder(View view) {
