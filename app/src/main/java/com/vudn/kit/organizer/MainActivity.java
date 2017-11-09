@@ -3,14 +3,10 @@ package com.vudn.kit.organizer;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,7 +16,6 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.OvershootInterpolator;
 
 import com.vudn.kit.organizer.note.Note;
 import com.vudn.kit.organizer.note.NoteDBHelper;
@@ -41,10 +36,6 @@ public class MainActivity extends AppCompatActivity implements
     private RecyclerAdapter recyclerAdapter;
     private ActionMode actionMode;
 
-    private FloatingActionButton insertButton;
-    private FloatingActionButton deleteButton;
-    private FloatingActionButton completeButton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,8 +45,6 @@ public class MainActivity extends AppCompatActivity implements
         initNoteList();
         initListView();
         initFooter();
-        initFloatingButtons();
-        setClickListeners();
         readDatabase();
     }
 
@@ -69,12 +58,6 @@ public class MainActivity extends AppCompatActivity implements
         recyclerAdapter.setOnClickListener(this);
         recyclerAdapter.setOnLongClickListener(this);
         recyclerAdapter.setOnCompletedStateChangeListener(this);
-    }
-
-    private void initFloatingButtons() {
-        insertButton = (FloatingActionButton) findViewById(R.id.insert_fab);
-        deleteButton = (FloatingActionButton) findViewById(R.id.delete_fab);
-        completeButton = (FloatingActionButton) findViewById(R.id.complete_fab);
     }
 
     private void initListView() {
@@ -91,12 +74,6 @@ public class MainActivity extends AppCompatActivity implements
                 insertNote(note);
             }
         });
-    }
-
-    private void setClickListeners() {
-        insertButton.setOnClickListener(this);
-        deleteButton.setOnClickListener(this);
-        completeButton.setOnClickListener(this);
     }
 
     private void readDatabase() {
@@ -170,42 +147,6 @@ public class MainActivity extends AppCompatActivity implements
     private String[] getWhereArgs(Note note) {
         return new String[]{note.getName(), note.getBody(), String.valueOf(note.getTimeCreated()),
                 String.valueOf(note.getTimeUpdated()), String.valueOf(note.isCompleted() ? 1 : 0)};
-    }
-
-    private void setButtonsStateStarted() {
-        changeInsertButtonForward();
-        deleteButton.show();
-        completeButton.show();
-    }
-
-    private void changeInsertButtonForward() {
-        rotateInsertButton(45.0F);
-        changeInsertButtonColor(R.color.colorCancel);
-    }
-
-    private void rotateInsertButton(float value) {
-        ViewCompat.animate(insertButton)
-                .rotation(value)
-                .withLayer()
-                .setDuration(500L)
-                .setInterpolator(new OvershootInterpolator())
-                .start();
-    }
-
-    private void changeInsertButtonColor(int color) {
-        insertButton.setBackgroundTintList(
-                ColorStateList.valueOf(ContextCompat.getColor(this, color)));
-    }
-
-    private void setButtonsStateFinished() {
-        changeInsertButtonBackward();
-        deleteButton.hide();
-        completeButton.hide();
-    }
-
-    private void changeInsertButtonBackward() {
-        rotateInsertButton(0.0F);
-        changeInsertButtonColor(R.color.colorAccent);
     }
 
     private void showDeleteAlertDialog() {
@@ -309,18 +250,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.insert_fab:
-                if (actionMode == null) {
-                    startActivityForResult(new Intent(this, EditorActivity.class), REQUEST_CODE);
-                }
-                releaseActionMode();
-                break;
-            case R.id.delete_fab:
-                showDeleteAlertDialog();
-                break;
-            case R.id.complete_fab:
-                showCompleteAlertDialog();
-                break;
             case R.id.cardView:
                 final int position = recyclerView.getChildPosition(v);
                 if (actionMode != null) {
@@ -353,7 +282,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-        setButtonsStateStarted();
         actionMode = mode;
         return true;
     }
@@ -381,7 +309,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onDestroyActionMode(ActionMode mode) {
         recyclerAdapter.clearSelections();
-        setButtonsStateFinished();
         actionMode = null;
     }
 
