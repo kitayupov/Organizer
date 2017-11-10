@@ -17,64 +17,57 @@
         android:orientation="vertical"
         android:padding="12dp">
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/mainContent"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/nameTextView"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                card_view:layout_constraintBottom_toBottomOf="parent"
-                card_view:layout_constraintEnd_toStartOf="@+id/completedCheckboxLayout"
-                card_view:layout_constraintStart_toStartOf="parent"
-                card_view:layout_constraintTop_toTopOf="parent" />
+                android:layout_toStartOf="@+id/completedCheckboxLayout"
+                android:textAllCaps="true"
+                android:textStyle="bold" />
 
             <FrameLayout
                 android:id="@+id/completedCheckboxLayout"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:padding="4dp"
-                card_view:layout_constraintBottom_toBottomOf="@+id/nameTextView"
-                card_view:layout_constraintEnd_toEndOf="parent"
-                card_view:layout_constraintTop_toTopOf="@+id/nameTextView">
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:padding="2dp">
 
                 <ToggleButton
                     android:id="@+id/completedCheckbox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
                     android:background="@drawable/checkbox_selector"
                     android:textOff=""
                     android:textOn="" />
 
             </FrameLayout>
 
-        </android.support.constraint.ConstraintLayout>
+        </RelativeLayout>
 
-        <android.support.constraint.ConstraintLayout
+        <RelativeLayout
             android:id="@+id/expandedContentLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            card_view:layout_constraintEnd_toStartOf="@id/completedCheckbox"
-            card_view:layout_constraintStart_toStartOf="parent"
-            card_view:layout_constraintTop_toBottomOf="@id/mainContent">
+            android:paddingTop="8dp">
 
             <LinearLayout
                 android:id="@+id/expandedContent"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
                 android:layout_marginEnd="8dp"
                 android:layout_marginStart="8dp"
-                android:orientation="vertical"
-                card_view:layout_constraintBottom_toBottomOf="parent"
-                card_view:layout_constraintEnd_toStartOf="@+id/editImageViewLayout"
-                card_view:layout_constraintStart_toStartOf="parent"
-                card_view:layout_constraintTop_toTopOf="parent">
+                android:layout_toStartOf="@+id/editImageView"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/bodyTextView"
@@ -90,24 +83,16 @@
 
             </LinearLayout>
 
-            <FrameLayout
-                android:id="@+id/editImageViewLayout"
+            <ImageView
+                android:id="@+id/editImageView"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                card_view:layout_constraintBottom_toBottomOf="@+id/expandedContent"
-                card_view:layout_constraintEnd_toEndOf="parent"
-                card_view:layout_constraintTop_toTopOf="@+id/expandedContent">
+                android:layout_alignParentEnd="true"
+                android:layout_gravity="center"
+                android:padding="2dp"
+                android:src="@drawable/vector_edit" />
 
-                <ImageView
-                    android:id="@+id/editImageView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:src="@drawable/vector_edit" />
-
-            </FrameLayout>
-
-        </android.support.constraint.ConstraintLayout>
+        </RelativeLayout>
 
     </LinearLayout>
 
