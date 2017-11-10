@@ -74,6 +74,7 @@ public class NoteDBHelper extends SQLiteOpenHelper {
                                 "alter table %s add column %s text default %d",
                                 TABLE_NAME, DATE_TARGET, -1)
                 );
+                onUpgrade(db, oldVersion + 1, newVersion);
                 break;
             default:
         }
@@ -83,7 +84,7 @@ public class NoteDBHelper extends SQLiteOpenHelper {
         static final String CREATE_QUERY =
                 String.format(
                         "create table %s (%s integer primary key autoincrement, " +
-                                "%s text, %s text, %s numeric, %s numeric, %s numeric)",
+                                "%s text, %s text, %s numeric, %s numeric, %s numeric, %s numeric)",
                         TABLE_NAME, _ID, NAME, BODY, DATE_TARGET, TIME_CREATED, TIME_UPDATED, COMPLETED
                 );
     }
