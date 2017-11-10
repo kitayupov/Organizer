@@ -43,6 +43,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
     private void setClickListeners() {
         findViewById(R.id.fab).setOnClickListener(this);
+        dateTargetTextView.setOnClickListener(this);
         calendarButton.setOnClickListener(this);
     }
 
@@ -78,6 +79,9 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         switch (view.getId()) {
             case R.id.fab:
                 sendResult();
+                break;
+            case R.id.calendarButton:
+            case R.id.dateTargetTextView:
                 break;
             default:
                 Log.e("TAG", "Not implemented yet: " + view.getId());
