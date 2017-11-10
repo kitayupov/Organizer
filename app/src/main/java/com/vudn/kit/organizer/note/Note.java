@@ -8,8 +8,8 @@ import java.util.Date;
 
 public class Note implements Parcelable {
 
+    public static final int DEFAULT_DATE_TARGET = -1;
     static final String DEFAULT_BODY = "";
-    static final int DEFAULT_DATE_TARGET = -1;
 
     private static final boolean DEFAULT_COMPLETED_STATE = false;
     private static final long CURRENT_TIME = new Date().getTime();

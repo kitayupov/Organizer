@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -18,6 +19,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     private EditText bodyEditText;
     private TextView dateTargetTextView;
     private CheckBox completedCheckBox;
+    private View calendarButton;
     private int position;
     private Note note;
 
@@ -36,10 +38,12 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         bodyEditText = (EditText) findViewById(R.id.bodyEditText);
         dateTargetTextView = (TextView) findViewById(R.id.dateTargetTextView);
         completedCheckBox = ((CheckBox) findViewById(R.id.completedCheckBox));
+        calendarButton = findViewById(R.id.calendarButton);
     }
 
     private void setClickListeners() {
         findViewById(R.id.fab).setOnClickListener(this);
+        calendarButton.setOnClickListener(this);
     }
 
     private void getIntentData() {
@@ -56,19 +60,27 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void setDateTarget(long dateTarget) {
-        if (dateTarget != -1) {
+        final boolean isDateEmpty = (dateTarget == Note.DEFAULT_DATE_TARGET);
+        if (!isDateEmpty) {
             dateTargetTextView.setText(DateUtil.getDateString(dateTarget));
         } else {
             dateTargetTextView.setVisibility(View.GONE);
         }
+        calendarButton.setVisibility(getVisibility(isDateEmpty));
+    }
+
+    private int getVisibility(boolean visible) {
+        return visible ? View.VISIBLE : View.GONE;
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
+    public void onClick(View view) {
+        switch (view.getId()) {
             case R.id.fab:
                 sendResult();
                 break;
+            default:
+                Log.e("TAG", "Not implemented yet: " + view.getId());
         }
     }
 
