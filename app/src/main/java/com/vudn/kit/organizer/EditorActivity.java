@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.vudn.kit.organizer.fragment.DateDialogFragment;
 import com.vudn.kit.organizer.note.Note;
+import com.vudn.kit.organizer.note.NoteDBHelper;
 import com.vudn.kit.organizer.util.DateUtil;
 
 public class EditorActivity extends AppCompatActivity implements View.OnClickListener {
@@ -83,11 +84,19 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.calendarButton:
             case R.id.dateTargetTextView:
-                new DateDialogFragment().show(getFragmentManager(), "Date");
+                startDateSelectDialog();
                 break;
             default:
                 Log.e("TAG", "Not implemented yet: " + view.getId());
         }
+    }
+
+    private void startDateSelectDialog() {
+        final DateDialogFragment dateDialogFragment = new DateDialogFragment();
+        final Bundle bundle = new Bundle();
+        bundle.putLong(NoteDBHelper.DATE_TARGET, note.getDateTarget());
+        dateDialogFragment.setArguments(bundle);
+        dateDialogFragment.show(getFragmentManager(), "Date");
     }
 
     private void sendResult() {

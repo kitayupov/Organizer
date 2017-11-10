@@ -5,18 +5,30 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CalendarView;
 
 import com.vudn.kit.organizer.R;
+import com.vudn.kit.organizer.note.Note;
+import com.vudn.kit.organizer.note.NoteDBHelper;
 
 public class DateDialogFragment extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_date, null);
-        builder.setView(view);
-        builder.setNegativeButton("No", null);
-        builder.setPositiveButton("Yes", null);
-        return builder.create();
+        return new AlertDialog.Builder(getActivity())
+                .setView(getContentView())
+                .setNegativeButton("No", null)
+                .setPositiveButton("Yes", null)
+                .create();
+    }
+
+    private View getContentView() {
+        final View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_date, null);
+        long dateTarget = getArguments().getLong(NoteDBHelper.DATE_TARGET);
+        if (dateTarget != Note.DEFAULT_DATE_TARGET) {
+            final CalendarView calendarView = view.findViewById(R.id.calendarView);
+            calendarView.setDate(dateTarget);
+        }
+        return view;
     }
 }
