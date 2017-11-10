@@ -10,6 +10,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.vudn.kit.organizer.fragment.DateDialogFragment;
 import com.vudn.kit.organizer.note.Note;
 import com.vudn.kit.organizer.util.DateUtil;
 
@@ -82,6 +83,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.calendarButton:
             case R.id.dateTargetTextView:
+                new DateDialogFragment().show(getFragmentManager(), "Date");
                 break;
             default:
                 Log.e("TAG", "Not implemented yet: " + view.getId());
