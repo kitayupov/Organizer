@@ -126,6 +126,12 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         bundle.putString(NoteDBHelper.TIME_TARGET, note.getTimeTarget().name());
         bundle.putLong(NoteDBHelper.DATE_TARGET, note.getDateTarget());
         timeDialogFragment.setArguments(bundle);
+        timeDialogFragment.setTimeSelectedCallback(new TimeDialogFragment.OnTimeSelectedCallback() {
+            @Override
+            public void onTimeSelected(int hour, int minute) {
+                System.out.println(hour + ":" + minute);
+            }
+        });
         timeDialogFragment.show(getFragmentManager(), "Time");
     }
 

@@ -17,6 +17,7 @@ import java.util.Calendar;
 public class TimeDialogFragment extends DialogFragment {
 
     private TimePicker timePicker;
+    private OnTimeSelectedCallback timeSelectedCallback;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -25,6 +26,10 @@ public class TimeDialogFragment extends DialogFragment {
                 .setPositiveButton("Yes", clickListener)
                 .setNegativeButton("No", null)
                 .create();
+    }
+
+    public void setTimeSelectedCallback(OnTimeSelectedCallback timeSelectedCallback) {
+        this.timeSelectedCallback = timeSelectedCallback;
     }
 
     private View getContentView() {
@@ -49,10 +54,13 @@ public class TimeDialogFragment extends DialogFragment {
     private DialogInterface.OnClickListener clickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            final int hour = timePicker.getHour();
-            final int minute = timePicker.getMinute();
-            System.out.println(hour);
-            System.out.println(minute);
+            if (timeSelectedCallback != null) {
+                timeSelectedCallback.onTimeSelected(timePicker.getHour(), timePicker.getMinute());
+            }
         }
     };
+
+    public interface OnTimeSelectedCallback {
+        void onTimeSelected(int hour, int minute);
+    }
 }
