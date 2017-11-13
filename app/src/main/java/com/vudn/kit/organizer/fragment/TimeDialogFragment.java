@@ -78,8 +78,7 @@ public class TimeDialogFragment extends DialogFragment {
                     minute = timePicker.getMinute();
                     break;
                 default:
-                    hour = Note.DEFAULT_DATE_TARGET;
-                    minute = Note.DEFAULT_DATE_TARGET;
+                    hour = minute = Note.DEFAULT_DATE_TARGET;
             }
             if (timeSelectedCallback != null) {
                 timeSelectedCallback.onTimeSelected(hour, minute);

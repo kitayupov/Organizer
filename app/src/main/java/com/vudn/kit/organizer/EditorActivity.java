@@ -127,8 +127,19 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         dateDialogFragment.setArguments(bundle);
         dateDialogFragment.setDateSelectedCallback(new DateDialogFragment.OnDateSelectedCallback() {
             @Override
-            public void onDateSelected(long date) {
-                note.setDateTarget(date);
+            public void onDateSelected(int day, int month, int year) {
+                if (day != Note.DEFAULT_DATE_TARGET
+                        && month != Note.DEFAULT_DATE_TARGET
+                        && year != Note.DEFAULT_DATE_TARGET) {
+                    final Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(note.getDateTarget());
+                    calendar.set(Calendar.DAY_OF_MONTH, day);
+                    calendar.set(Calendar.MONTH, month);
+                    calendar.set(Calendar.YEAR, year);
+                    note.setDateTarget(calendar.getTimeInMillis());
+                } else {
+                    note.setDateTarget(Note.DEFAULT_DATE_TARGET);
+                }
                 setDateTarget();
             }
         });

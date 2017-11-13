@@ -11,6 +11,8 @@ import android.widget.CalendarView;
 import com.vudn.kit.organizer.note.Note;
 import com.vudn.kit.organizer.note.NoteDBHelper;
 
+import java.util.Calendar;
+
 public class DateDialogFragment extends DialogFragment {
 
     private CalendarView calendarView;
@@ -56,21 +58,27 @@ public class DateDialogFragment extends DialogFragment {
     private DialogInterface.OnClickListener clickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            final long selectedDate;
+            final int day;
+            final int month;
+            final int year;
             switch (which) {
                 case DialogInterface.BUTTON_POSITIVE:
-                    selectedDate = calendarView.getDate();
+                    final Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(calendarView.getDate());
+                    day = calendar.get(Calendar.DAY_OF_MONTH);
+                    month = calendar.get(Calendar.MONTH);
+                    year = calendar.get(Calendar.YEAR);
                     break;
                 default:
-                    selectedDate = Note.DEFAULT_DATE_TARGET;
+                    day = month = year = Note.DEFAULT_DATE_TARGET;
             }
             if (dateSelectedCallback != null) {
-                dateSelectedCallback.onDateSelected(selectedDate);
+                dateSelectedCallback.onDateSelected(day, month, year);
             }
         }
     };
 
     public interface OnDateSelectedCallback {
-        void onDateSelected(long date);
+        void onDateSelected(int day, int month, int year);
     }
 }
