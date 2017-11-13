@@ -25,6 +25,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     private TextView timeTargetTextView;
     private CheckBox completedCheckBox;
     private View calendarButton;
+    private View timePickerButton;
     private View dateLayout;
     private int position;
     private Note note;
@@ -46,6 +47,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         timeTargetTextView = (TextView) findViewById(R.id.timeTargetTextView);
         completedCheckBox = ((CheckBox) findViewById(R.id.completedCheckBox));
         calendarButton = findViewById(R.id.calendarButton);
+        timePickerButton = findViewById(R.id.timePickerButton);
         dateLayout = findViewById(R.id.dateLayout);
     }
 
@@ -53,6 +55,8 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         findViewById(R.id.fab).setOnClickListener(this);
         dateTargetTextView.setOnClickListener(this);
         calendarButton.setOnClickListener(this);
+        timeTargetTextView.setOnClickListener(this);
+        timePickerButton.setOnClickListener(this);
     }
 
     private void getIntentData() {
@@ -90,6 +94,9 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.calendarButton:
             case R.id.dateTargetTextView:
                 startDateSelectDialog();
+                break;
+            case R.id.timePickerButton:
+            case R.id.timeTargetTextView:
                 break;
             default:
                 Log.e(TAG, "Not implemented yet: " + view.getId());

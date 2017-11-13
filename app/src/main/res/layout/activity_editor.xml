@@ -93,8 +93,19 @@
             android:id="@+id/calendarButton"
             android:layout_width="32dp"
             android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
             android:padding="2dp"
             android:src="@drawable/vector_calendar" />
+
+        <ImageView
+            android:id="@+id/timePickerButton"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:padding="2dp"
+            android:src="@drawable/vector_clock" />
 
     </LinearLayout>
 
