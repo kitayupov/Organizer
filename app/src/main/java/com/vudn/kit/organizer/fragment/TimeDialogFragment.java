@@ -5,10 +5,17 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TimePicker;
 
 import com.vudn.kit.organizer.R;
+import com.vudn.kit.organizer.note.Note;
+import com.vudn.kit.organizer.note.NoteDBHelper;
+
+import java.util.Calendar;
 
 public class TimeDialogFragment extends DialogFragment {
+
+    private TimePicker timePicker;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -20,6 +27,21 @@ public class TimeDialogFragment extends DialogFragment {
     }
 
     private View getContentView() {
-        return getActivity().getLayoutInflater().inflate(R.layout.dialog_time, null);
+        final View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_time, null);
+        timePicker = view.findViewById(R.id.timePicker);
+        setTimeTarget();
+        return view;
+    }
+
+    private void setTimeTarget() {
+        final String stringExtra = getArguments().getString(NoteDBHelper.TIME_TARGET);
+        final Note.TimeTarget timeTarget = Note.TimeTarget.valueOf(stringExtra);
+        final long dateTarget = getArguments().getLong(NoteDBHelper.DATE_TARGET);
+        if (timeTarget.equals(Note.TimeTarget.NONE)) {
+            final Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(dateTarget);
+            timePicker.setHour(calendar.get(Calendar.HOUR));
+            timePicker.setMinute(calendar.get(Calendar.MINUTE));
+        }
     }
 }
