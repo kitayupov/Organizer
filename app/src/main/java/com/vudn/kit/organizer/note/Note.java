@@ -96,12 +96,16 @@ public class Note implements Parcelable {
         this.isCompleted = isCompleted;
     }
 
-    public Note copy() {
-        return new Note(name, body, dateTarget, timeCreated, timeUpdated, isCompleted);
-    }
-
     public void setUpdated() {
         timeUpdated = new Date().getTime();
+    }
+
+    public void setDateTarget(long dateTarget) {
+        this.dateTarget = dateTarget;
+    }
+
+    public Note copy() {
+        return new Note(name, body, dateTarget, timeCreated, timeUpdated, isCompleted);
     }
 
     @Override

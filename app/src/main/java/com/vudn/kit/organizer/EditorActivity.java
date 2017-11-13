@@ -17,6 +17,8 @@ import com.vudn.kit.organizer.util.DateUtil;
 
 public class EditorActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private static final String TAG = EditorActivity.class.getSimpleName();
+
     private EditText nameEditText;
     private EditText bodyEditText;
     private TextView dateTargetTextView;
@@ -66,9 +68,8 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         final boolean isDateEmpty = (dateTarget == Note.DEFAULT_DATE_TARGET);
         if (!isDateEmpty) {
             dateTargetTextView.setText(DateUtil.getDateString(dateTarget));
-        } else {
-            dateTargetTextView.setVisibility(View.GONE);
         }
+        dateTargetTextView.setVisibility(getVisibility(!isDateEmpty));
         calendarButton.setVisibility(getVisibility(isDateEmpty));
     }
 
@@ -87,7 +88,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 startDateSelectDialog();
                 break;
             default:
-                Log.e("TAG", "Not implemented yet: " + view.getId());
+                Log.e(TAG, "Not implemented yet: " + view.getId());
         }
     }
 
@@ -96,6 +97,13 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         final Bundle bundle = new Bundle();
         bundle.putLong(NoteDBHelper.DATE_TARGET, note.getDateTarget());
         dateDialogFragment.setArguments(bundle);
+        dateDialogFragment.setDateSelectedCallback(new DateDialogFragment.OnDateSelectedCallback() {
+            @Override
+            public void onDateSelected(long date) {
+                note.setDateTarget(date);
+                setDateTarget(date);
+            }
+        });
         dateDialogFragment.show(getFragmentManager(), "Date");
     }
 

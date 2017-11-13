@@ -15,14 +15,19 @@ import com.vudn.kit.organizer.note.NoteDBHelper;
 public class DateDialogFragment extends DialogFragment {
 
     private CalendarView calendarView;
+    private OnDateSelectedCallback dateSelectedCallback;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         return new AlertDialog.Builder(getActivity())
                 .setView(getContentView())
-                .setNegativeButton("No", null)
                 .setPositiveButton("Yes", clickListener)
+                .setNegativeButton("No", null)
                 .create();
+    }
+
+    public void setDateSelectedCallback(OnDateSelectedCallback dateSelectedCallback) {
+        this.dateSelectedCallback = dateSelectedCallback;
     }
 
     private View getContentView() {
@@ -43,7 +48,13 @@ public class DateDialogFragment extends DialogFragment {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             final long selectedDate = calendarView.getDate();
-            System.out.println(selectedDate);
+            if (dateSelectedCallback != null) {
+                dateSelectedCallback.onDateSelected(selectedDate);
+            }
         }
     };
+
+    public interface OnDateSelectedCallback {
+        void onDateSelected(long date);
+    }
 }
