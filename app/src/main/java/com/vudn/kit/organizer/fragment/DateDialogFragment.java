@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.CalendarView;
 
-import com.vudn.kit.organizer.R;
 import com.vudn.kit.organizer.note.Note;
 import com.vudn.kit.organizer.note.NoteDBHelper;
 
@@ -20,25 +19,35 @@ public class DateDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         return new AlertDialog.Builder(getActivity())
-                .setView(getContentView())
+                .setView(getContentView(savedInstanceState))
                 .setPositiveButton("Yes", clickListener)
                 .setNegativeButton("No", clickListener)
                 .create();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(NoteDBHelper.DATE_TARGET, calendarView.getDate());
     }
 
     public void setDateSelectedCallback(OnDateSelectedCallback dateSelectedCallback) {
         this.dateSelectedCallback = dateSelectedCallback;
     }
 
-    private View getContentView() {
-        final View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_date, null);
-        calendarView = view.findViewById(R.id.calendarView);
-        setDateTarget();
-        return view;
+    private View getContentView(Bundle savedInstanceState) {
+        calendarView = new CalendarView(getActivity());
+        setDateTarget(savedInstanceState);
+        return calendarView;
     }
 
-    private void setDateTarget() {
-        final long dateTarget = getArguments().getLong(NoteDBHelper.DATE_TARGET);
+    private void setDateTarget(Bundle savedInstanceState) {
+        final long dateTarget;
+        if (savedInstanceState == null) {
+            dateTarget = getArguments().getLong(NoteDBHelper.DATE_TARGET);
+        } else {
+            dateTarget = savedInstanceState.getLong(NoteDBHelper.DATE_TARGET);
+        }
         if (dateTarget != Note.DEFAULT_DATE_TARGET) {
             calendarView.setDate(dateTarget);
         }
