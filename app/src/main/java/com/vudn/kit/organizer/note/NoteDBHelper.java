@@ -13,15 +13,18 @@ public class NoteDBHelper extends SQLiteOpenHelper {
     public static final String NAME = "name";
     public static final String BODY = "body";
     public static final String DATE_TARGET = "dateTarget";
+    public static final String TIME_TARGET = "timeTarget";
     public static final String TIME_CREATED = "timeCreated";
     public static final String TIME_UPDATED = "timeUpdated";
     public static final String COMPLETED = "completed";
 
-    public static final String WHERE_CLAUSE = NAME + "=? and " + BODY + "=? and " + DATE_TARGET + "=? and "
-            + TIME_CREATED + "=? and " + TIME_UPDATED + "=? and " + COMPLETED + "=?";
+    public static final String WHERE_CLAUSE = NAME + "=? and " + BODY + "=? and "
+            + DATE_TARGET + "=? and " + TIME_TARGET + "=? and "
+            + TIME_CREATED + "=? and " + TIME_UPDATED + "=? and "
+            + COMPLETED + "=?";
 
     private static final String NOTES_DB = "notes.db";
-    private static final int VERSION = 5;
+    private static final int VERSION = 6;
 
     public NoteDBHelper(Context context) {
         this(context, NOTES_DB, null, VERSION);
@@ -72,7 +75,15 @@ public class NoteDBHelper extends SQLiteOpenHelper {
                 db.execSQL(
                         String.format(
                                 "alter table %s add column %s text default %d",
-                                TABLE_NAME, DATE_TARGET, -1)
+                                TABLE_NAME, DATE_TARGET, Note.DEFAULT_DATE_TARGET)
+                );
+                onUpgrade(db, oldVersion + 1, newVersion);
+                break;
+            case 5:
+                db.execSQL(
+                        String.format(
+                                "alter table %s add column %s text default %s",
+                                TABLE_NAME, TIME_TARGET, Note.TimeTarget.NONE.name())
                 );
                 onUpgrade(db, oldVersion + 1, newVersion);
                 break;
@@ -84,8 +95,9 @@ public class NoteDBHelper extends SQLiteOpenHelper {
         static final String CREATE_QUERY =
                 String.format(
                         "create table %s (%s integer primary key autoincrement, " +
-                                "%s text, %s text, %s numeric, %s numeric, %s numeric, %s numeric)",
-                        TABLE_NAME, _ID, NAME, BODY, DATE_TARGET, TIME_CREATED, TIME_UPDATED, COMPLETED
+                                "%s text, %s text, %s numeric, %s text, %s numeric, %s numeric, %s numeric)",
+                        TABLE_NAME, _ID,
+                        NAME, BODY, DATE_TARGET, TIME_TARGET, TIME_CREATED, TIME_UPDATED, COMPLETED
                 );
     }
 }

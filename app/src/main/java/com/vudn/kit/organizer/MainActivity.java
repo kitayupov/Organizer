@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements
             final int nameIndex = cursor.getColumnIndex(NoteDBHelper.NAME);
             final int bodyIndex = cursor.getColumnIndex(NoteDBHelper.BODY);
             final int dateTargetIndex = cursor.getColumnIndex(NoteDBHelper.DATE_TARGET);
+            final int timeTargetIndex = cursor.getColumnIndex(NoteDBHelper.TIME_TARGET);
             final int createdIndex = cursor.getColumnIndex(NoteDBHelper.TIME_CREATED);
             final int updatedIndex = cursor.getColumnIndex(NoteDBHelper.TIME_UPDATED);
             final int completedIndex = cursor.getColumnIndex(NoteDBHelper.COMPLETED);
@@ -86,10 +87,11 @@ public class MainActivity extends AppCompatActivity implements
                 final String name = cursor.getString(nameIndex);
                 final String body = cursor.getString(bodyIndex);
                 final long dateTarget = cursor.getLong(dateTargetIndex);
+                final Note.TimeTarget timeTarget = Note.TimeTarget.valueOf(cursor.getString(timeTargetIndex));
                 final long timeCreated = cursor.getLong(createdIndex);
                 final long timeUpdated = cursor.getLong(updatedIndex);
                 final boolean completed = cursor.getInt(completedIndex) == 1;
-                final Note note = new Note(name, body, dateTarget, timeCreated, timeUpdated, completed);
+                final Note note = new Note(name, body, dateTarget, timeTarget, timeCreated, timeUpdated, completed);
                 recyclerAdapter.insertNote(note);
             } while (cursor.moveToNext());
         }
@@ -118,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements
         values.put(NoteDBHelper.NAME, note.getName());
         values.put(NoteDBHelper.BODY, note.getBody());
         values.put(NoteDBHelper.DATE_TARGET, note.getDateTarget());
+        values.put(NoteDBHelper.TIME_TARGET, note.getTimeTarget().name());
         values.put(NoteDBHelper.TIME_CREATED, note.getTimeCreated());
         values.put(NoteDBHelper.TIME_UPDATED, note.getTimeUpdated());
         values.put(NoteDBHelper.COMPLETED, note.isCompleted() ? 1 : 0);
@@ -126,7 +129,8 @@ public class MainActivity extends AppCompatActivity implements
 
     @NonNull
     private String[] getWhereArgs(Note note) {
-        return new String[]{note.getName(), note.getBody(), String.valueOf(note.getDateTarget()),
+        return new String[]{note.getName(), note.getBody(),
+                String.valueOf(note.getDateTarget()), note.getTimeTarget().name(),
                 String.valueOf(note.getTimeCreated()), String.valueOf(note.getTimeUpdated()),
                 String.valueOf(note.isCompleted() ? 1 : 0)};
     }
