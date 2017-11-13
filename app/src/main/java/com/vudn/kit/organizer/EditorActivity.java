@@ -22,8 +22,10 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     private EditText nameEditText;
     private EditText bodyEditText;
     private TextView dateTargetTextView;
+    private TextView timeTargetTextView;
     private CheckBox completedCheckBox;
     private View calendarButton;
+    private View dateLayout;
     private int position;
     private Note note;
 
@@ -41,8 +43,10 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         nameEditText = (EditText) findViewById(R.id.nameEditText);
         bodyEditText = (EditText) findViewById(R.id.bodyEditText);
         dateTargetTextView = (TextView) findViewById(R.id.dateTargetTextView);
+        timeTargetTextView = (TextView) findViewById(R.id.timeTargetTextView);
         completedCheckBox = ((CheckBox) findViewById(R.id.completedCheckBox));
         calendarButton = findViewById(R.id.calendarButton);
+        dateLayout = findViewById(R.id.dateLayout);
     }
 
     private void setClickListeners() {
@@ -69,8 +73,8 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         if (!isDateEmpty) {
             dateTargetTextView.setText(DateUtil.getDateString(dateTarget));
         }
-        dateTargetTextView.setVisibility(getVisibility(!isDateEmpty));
         calendarButton.setVisibility(getVisibility(isDateEmpty));
+        dateLayout.setVisibility(getVisibility(!isDateEmpty));
     }
 
     private int getVisibility(boolean visible) {

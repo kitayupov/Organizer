@@ -45,14 +45,28 @@
 
     </android.support.design.widget.TextInputLayout>
 
-    <TextView
-        android:id="@+id/dateTargetTextView"
+    <LinearLayout
+        android:id="@+id/dateLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
+        android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bodyInputLayout" />
+        app:layout_constraintTop_toBottomOf="@id/bodyInputLayout">
+
+        <TextView
+            android:id="@+id/dateTargetTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/timeTargetTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp" />
+
+    </LinearLayout>
 
     <CheckBox
         android:id="@+id/completedCheckBox"
@@ -63,7 +77,7 @@
         android:layout_marginTop="16dp"
         android:text="@string/label_completed"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dateTargetTextView" />
+        app:layout_constraintTop_toBottomOf="@+id/dateLayout" />
 
     <LinearLayout
         android:layout_width="wrap_content"
