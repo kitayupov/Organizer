@@ -43,7 +43,7 @@ public class TimeDialogFragment extends DialogFragment {
         final String stringExtra = getArguments().getString(NoteDBHelper.TIME_TARGET);
         final Note.TimeTarget timeTarget = Note.TimeTarget.valueOf(stringExtra);
         final long dateTarget = getArguments().getLong(NoteDBHelper.DATE_TARGET);
-        if (timeTarget.equals(Note.TimeTarget.NONE)) {
+        if (!timeTarget.equals(Note.TimeTarget.NONE)) {
             final Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(dateTarget);
             timePicker.setHour(calendar.get(Calendar.HOUR));
