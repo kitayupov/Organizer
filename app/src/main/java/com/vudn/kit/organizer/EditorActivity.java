@@ -27,6 +27,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     private TextView dateTargetTextView;
     private TextView timeTargetTextView;
     private CheckBox completedCheckBox;
+    private View timePickerButton;
     private View dateLayout;
     private int position;
     private Note note;
@@ -47,6 +48,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         dateTargetTextView = (TextView) findViewById(R.id.dateTargetTextView);
         timeTargetTextView = (TextView) findViewById(R.id.timeTargetTextView);
         completedCheckBox = ((CheckBox) findViewById(R.id.completedCheckBox));
+        timePickerButton = findViewById(R.id.timePickerButton);
         dateLayout = findViewById(R.id.dateLayout);
     }
 
@@ -55,7 +57,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         dateTargetTextView.setOnClickListener(this);
         findViewById(R.id.calendarButton).setOnClickListener(this);
         timeTargetTextView.setOnClickListener(this);
-        findViewById(R.id.timePickerButton).setOnClickListener(this);
+        timePickerButton.setOnClickListener(this);
     }
 
     private void getIntentData() {
@@ -78,6 +80,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         if (!isDateEmpty) {
             dateTargetTextView.setText(DateTimeUtil.getDateString(dateTarget));
         }
+        timePickerButton.setVisibility(getVisibility(!isDateEmpty));
         dateLayout.setVisibility(getVisibility(!isDateEmpty));
     }
 
@@ -144,7 +147,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 if (hour != Note.DEFAULT_DATE_TARGET && minute != Note.DEFAULT_DATE_TARGET) {
                     final Calendar calendar = Calendar.getInstance();
                     calendar.setTimeInMillis(note.getDateTarget());
-                    calendar.set(Calendar.HOUR, hour);
+                    calendar.set(Calendar.HOUR_OF_DAY, hour);
                     calendar.set(Calendar.MINUTE, minute);
                     note.setDateTarget(calendar.getTimeInMillis());
                     note.setTimeTarget(Note.TimeTarget.SINGLE);

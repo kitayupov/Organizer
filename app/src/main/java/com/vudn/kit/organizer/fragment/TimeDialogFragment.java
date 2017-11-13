@@ -35,6 +35,7 @@ public class TimeDialogFragment extends DialogFragment {
     private View getContentView() {
         final View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_time, null);
         timePicker = view.findViewById(R.id.timePicker);
+        timePicker.setIs24HourView(true);
         setTimeTarget();
         return view;
     }
@@ -46,7 +47,7 @@ public class TimeDialogFragment extends DialogFragment {
         if (!timeTarget.equals(Note.TimeTarget.NONE)) {
             final Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(dateTarget);
-            timePicker.setHour(calendar.get(Calendar.HOUR));
+            timePicker.setHour(calendar.get(Calendar.HOUR_OF_DAY));
             timePicker.setMinute(calendar.get(Calendar.MINUTE));
         }
     }

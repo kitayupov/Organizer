@@ -12,12 +12,11 @@ public class DateTimeUtil {
     }
 
     public static String getTimeString(long date) {
-        final SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm", Locale.ROOT);
+        final SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.ROOT);
         return timeFormat.format(new Date(date));
     }
 
     public static String getDateTimeString(long date) {
-        final SimpleDateFormat timeFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm", Locale.ROOT);
-        return timeFormat.format(new Date(date));
+        return getDateString(date) + "\t" + getTimeString(date);
     }
 }
