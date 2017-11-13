@@ -24,7 +24,7 @@ public class TimeDialogFragment extends DialogFragment {
         return new AlertDialog.Builder(getActivity())
                 .setView(getContentView())
                 .setPositiveButton("Yes", clickListener)
-                .setNegativeButton("No", null)
+                .setNegativeButton("No", clickListener)
                 .create();
     }
 
@@ -54,8 +54,18 @@ public class TimeDialogFragment extends DialogFragment {
     private DialogInterface.OnClickListener clickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
+            final int hour, minute;
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    hour = timePicker.getHour();
+                    minute = timePicker.getMinute();
+                    break;
+                default:
+                    hour = Note.DEFAULT_DATE_TARGET;
+                    minute = Note.DEFAULT_DATE_TARGET;
+            }
             if (timeSelectedCallback != null) {
-                timeSelectedCallback.onTimeSelected(timePicker.getHour(), timePicker.getMinute());
+                timeSelectedCallback.onTimeSelected(hour, minute);
             }
         }
     };

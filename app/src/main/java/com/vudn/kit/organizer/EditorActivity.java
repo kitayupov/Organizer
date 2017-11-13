@@ -141,12 +141,16 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         timeDialogFragment.setTimeSelectedCallback(new TimeDialogFragment.OnTimeSelectedCallback() {
             @Override
             public void onTimeSelected(int hour, int minute) {
-                final Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(note.getDateTarget());
-                calendar.set(Calendar.HOUR, hour);
-                calendar.set(Calendar.MINUTE, minute);
-                note.setDateTarget(calendar.getTimeInMillis());
-                note.setTimeTarget(Note.TimeTarget.SINGLE);
+                if (hour != Note.DEFAULT_DATE_TARGET && minute != Note.DEFAULT_DATE_TARGET) {
+                    final Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(note.getDateTarget());
+                    calendar.set(Calendar.HOUR, hour);
+                    calendar.set(Calendar.MINUTE, minute);
+                    note.setDateTarget(calendar.getTimeInMillis());
+                    note.setTimeTarget(Note.TimeTarget.SINGLE);
+                } else {
+                    note.setTimeTarget(Note.TimeTarget.NONE);
+                }
                 setTimeTarget();
             }
         });
