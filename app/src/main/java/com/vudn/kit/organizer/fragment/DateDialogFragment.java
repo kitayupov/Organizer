@@ -22,7 +22,7 @@ public class DateDialogFragment extends DialogFragment {
         return new AlertDialog.Builder(getActivity())
                 .setView(getContentView())
                 .setPositiveButton("Yes", clickListener)
-                .setNegativeButton("No", null)
+                .setNegativeButton("No", clickListener)
                 .create();
     }
 
@@ -47,7 +47,14 @@ public class DateDialogFragment extends DialogFragment {
     private DialogInterface.OnClickListener clickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            final long selectedDate = calendarView.getDate();
+            final long selectedDate;
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    selectedDate = calendarView.getDate();
+                    break;
+                default:
+                    selectedDate = Note.DEFAULT_DATE_TARGET;
+            }
             if (dateSelectedCallback != null) {
                 dateSelectedCallback.onDateSelected(selectedDate);
             }
