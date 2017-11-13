@@ -11,7 +11,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.vudn.kit.organizer.R;
-import com.vudn.kit.organizer.util.DateUtil;
+import com.vudn.kit.organizer.util.DateTimeUtil;
 
 import java.util.ArrayList;
 
@@ -99,7 +99,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     private void setDateTarget(ViewHolder holder, long dateTarget) {
         final boolean isDateEmpty = (dateTarget == Note.DEFAULT_DATE_TARGET);
         if (!isDateEmpty) {
-            holder.dateTargetTextView.setText(DateUtil.getDateString(dateTarget));
+            holder.dateTargetTextView.setText(DateTimeUtil.getDateString(dateTarget));
         }
         holder.dateTargetTextView.setVisibility(getVisibility(isDateEmpty));
     }

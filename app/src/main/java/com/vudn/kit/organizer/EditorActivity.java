@@ -14,7 +14,7 @@ import com.vudn.kit.organizer.fragment.DateDialogFragment;
 import com.vudn.kit.organizer.fragment.TimeDialogFragment;
 import com.vudn.kit.organizer.note.Note;
 import com.vudn.kit.organizer.note.NoteDBHelper;
-import com.vudn.kit.organizer.util.DateUtil;
+import com.vudn.kit.organizer.util.DateTimeUtil;
 
 import java.util.Calendar;
 
@@ -76,7 +76,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         final long dateTarget = note.getDateTarget();
         final boolean isDateEmpty = (dateTarget == Note.DEFAULT_DATE_TARGET);
         if (!isDateEmpty) {
-            dateTargetTextView.setText(DateUtil.getDateString(dateTarget));
+            dateTargetTextView.setText(DateTimeUtil.getDateString(dateTarget));
         }
         dateLayout.setVisibility(getVisibility(!isDateEmpty));
     }
@@ -87,7 +87,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 timeTargetTextView.setText(null);
                 break;
             case SINGLE:
-                timeTargetTextView.setText(DateUtil.getTimeString(note.getDateTarget()));
+                timeTargetTextView.setText(DateTimeUtil.getTimeString(note.getDateTarget()));
                 break;
             default:
                 Log.e(TAG, "Not implemented yet: " + note.getTimeTarget());
