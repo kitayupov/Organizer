@@ -16,6 +16,8 @@ import com.vudn.kit.organizer.note.Note;
 import com.vudn.kit.organizer.note.NoteDBHelper;
 import com.vudn.kit.organizer.util.DateUtil;
 
+import java.util.Calendar;
+
 public class EditorActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = EditorActivity.class.getSimpleName();
@@ -70,16 +72,31 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         nameEditText.setText(note.getName());
         bodyEditText.setText(note.getBody());
         completedCheckBox.setChecked(note.isCompleted());
-        setDateTarget(note.getDateTarget());
+        setDateTarget();
+        setTimeTarget();
     }
 
-    private void setDateTarget(long dateTarget) {
+    private void setDateTarget() {
+        final long dateTarget = note.getDateTarget();
         final boolean isDateEmpty = (dateTarget == Note.DEFAULT_DATE_TARGET);
         if (!isDateEmpty) {
             dateTargetTextView.setText(DateUtil.getDateString(dateTarget));
         }
         calendarButton.setVisibility(getVisibility(isDateEmpty));
         dateLayout.setVisibility(getVisibility(!isDateEmpty));
+    }
+
+    private void setTimeTarget() {
+        switch (note.getTimeTarget()) {
+            case NONE:
+                timeTargetTextView.setText(null);
+                break;
+            case SINGLE:
+                timeTargetTextView.setText(DateUtil.getTimeString(note.getDateTarget()));
+                break;
+            default:
+                Log.e(TAG, "Not implemented yet: " + note.getTimeTarget());
+        }
     }
 
     private int getVisibility(boolean visible) {
@@ -114,7 +131,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
             @Override
             public void onDateSelected(long date) {
                 note.setDateTarget(date);
-                setDateTarget(date);
+                setDateTarget();
             }
         });
         dateDialogFragment.show(getFragmentManager(), "Date");
@@ -129,7 +146,13 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         timeDialogFragment.setTimeSelectedCallback(new TimeDialogFragment.OnTimeSelectedCallback() {
             @Override
             public void onTimeSelected(int hour, int minute) {
-                System.out.println(hour + ":" + minute);
+                final Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(note.getDateTarget());
+                calendar.set(Calendar.HOUR, hour);
+                calendar.set(Calendar.MINUTE, minute);
+                note.setDateTarget(calendar.getTimeInMillis());
+                note.setTimeTarget(Note.TimeTarget.SINGLE);
+                setTimeTarget();
             }
         });
         timeDialogFragment.show(getFragmentManager(), "Time");

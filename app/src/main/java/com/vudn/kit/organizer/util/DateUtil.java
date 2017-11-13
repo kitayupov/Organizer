@@ -10,4 +10,9 @@ public class DateUtil {
         final SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy", Locale.ROOT);
         return dateFormat.format(new Date(date));
     }
+
+    public static String getTimeString(long date) {
+        final SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm", Locale.ROOT);
+        return timeFormat.format(new Date(date));
+    }
 }
