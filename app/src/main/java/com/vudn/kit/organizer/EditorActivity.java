@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.vudn.kit.organizer.fragment.DateDialogFragment;
+import com.vudn.kit.organizer.fragment.TimeDialogFragment;
 import com.vudn.kit.organizer.note.Note;
 import com.vudn.kit.organizer.note.NoteDBHelper;
 import com.vudn.kit.organizer.util.DateUtil;
@@ -97,6 +98,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 break;
             case R.id.timePickerButton:
             case R.id.timeTargetTextView:
+                startTimeSelectDialog();
                 break;
             default:
                 Log.e(TAG, "Not implemented yet: " + view.getId());
@@ -116,6 +118,11 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
             }
         });
         dateDialogFragment.show(getFragmentManager(), "Date");
+    }
+
+    private void startTimeSelectDialog() {
+        final TimeDialogFragment timeDialogFragment = new TimeDialogFragment();
+        timeDialogFragment.show(getFragmentManager(), "Time");
     }
 
     private void sendResult() {
