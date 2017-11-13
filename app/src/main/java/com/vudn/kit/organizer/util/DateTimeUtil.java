@@ -15,4 +15,9 @@ public class DateTimeUtil {
         final SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm", Locale.ROOT);
         return timeFormat.format(new Date(date));
     }
+
+    public static String getDateTimeString(long date) {
+        final SimpleDateFormat timeFormat = new SimpleDateFormat("dd.MM.yyyy hh:mm", Locale.ROOT);
+        return timeFormat.format(new Date(date));
+    }
 }
