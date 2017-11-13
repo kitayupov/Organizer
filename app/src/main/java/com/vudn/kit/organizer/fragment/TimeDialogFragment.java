@@ -3,6 +3,7 @@ package com.vudn.kit.organizer.fragment;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TimePicker;
@@ -21,7 +22,7 @@ public class TimeDialogFragment extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         return new AlertDialog.Builder(getActivity())
                 .setView(getContentView())
-                .setPositiveButton("Yes", null)
+                .setPositiveButton("Yes", clickListener)
                 .setNegativeButton("No", null)
                 .create();
     }
@@ -44,4 +45,14 @@ public class TimeDialogFragment extends DialogFragment {
             timePicker.setMinute(calendar.get(Calendar.MINUTE));
         }
     }
+
+    private DialogInterface.OnClickListener clickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            final int hour = timePicker.getHour();
+            final int minute = timePicker.getMinute();
+            System.out.println(hour);
+            System.out.println(minute);
+        }
+    };
 }
