@@ -121,6 +121,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                     note.setDateTarget(calendar.getTimeInMillis());
                 } else {
                     note.setDateTarget(Note.DEFAULT_DATE_TARGET);
+                    note.setTimeTarget(Note.TimeTarget.NONE);
                 }
                 setDateTimeTarget();
             }
