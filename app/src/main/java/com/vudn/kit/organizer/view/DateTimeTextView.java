@@ -1,6 +1,7 @@
 package com.vudn.kit.organizer.view;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -31,17 +32,34 @@ public class DateTimeTextView extends LinearLayout {
     public DateTimeTextView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(context);
+        configure(context, attrs);
     }
 
     public DateTimeTextView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
+        configure(context, attrs);
     }
 
     private void init(Context context) {
         final View view = LayoutInflater.from(context).inflate(R.layout.date_time_layout, this);
         dateTextView = view.findViewById(R.id.dateTargetTextView);
         timeTextView = view.findViewById(R.id.timeTargetTextView);
+    }
+
+    private void configure(Context context, AttributeSet attrs) {
+        TypedArray a = context.getTheme().obtainStyledAttributes(
+                attrs,
+                R.styleable.DateTimeTextView,
+                0, 0);
+
+        try {
+            final int color = a.getColor(R.styleable.DateTimeTextView_textColor, getResources().getColor(android.R.color.primary_text_dark));
+            dateTextView.setTextColor(color);
+            timeTextView.setTextColor(color);
+        } finally {
+            a.recycle();
+        }
     }
 
     @Override

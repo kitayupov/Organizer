@@ -58,7 +58,8 @@
         <com.vudn.kit.organizer.view.DateTimeTextView
             android:id="@+id/dateTimeTextView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            app:textColor="@color/colorAccent" />
 
     </LinearLayout>
 
