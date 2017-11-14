@@ -19,4 +19,17 @@ public class DateTimeUtil {
     public static String getDateTimeString(long date) {
         return getDateString(date) + "\t" + getTimeString(date);
     }
+
+
+    public static String getDateTextString(long date) {
+        return "Date: " + getDateString(date);
+    }
+
+    public static String getTimeTextString(long date) {
+        return "Time: " + getTimeString(date);
+    }
+
+    public static String getDateTimeTextString(long date) {
+        return getDateTextString(date) + "\t" + getTimeTextString(date);
+    }
 }

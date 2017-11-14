@@ -102,10 +102,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             final String dateString;
             switch (timeTarget) {
                 case SINGLE:
-                    dateString = DateTimeUtil.getDateTimeString(dateTarget);
+                    dateString = DateTimeUtil.getDateTimeTextString(dateTarget);
                     break;
                 default:
-                    dateString = DateTimeUtil.getDateString(dateTarget);
+                    dateString = DateTimeUtil.getDateTextString(dateTarget);
             }
             holder.dateTargetTextView.setText(dateString);
         }
