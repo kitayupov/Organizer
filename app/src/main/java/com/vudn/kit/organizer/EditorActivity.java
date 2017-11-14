@@ -8,13 +8,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.vudn.kit.organizer.fragment.DateDialogFragment;
 import com.vudn.kit.organizer.fragment.TimeDialogFragment;
 import com.vudn.kit.organizer.note.Note;
 import com.vudn.kit.organizer.note.NoteDBHelper;
-import com.vudn.kit.organizer.util.DateTimeUtil;
+import com.vudn.kit.organizer.view.DateTimeTextView;
 
 import java.util.Calendar;
 
@@ -24,8 +23,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
     private EditText nameEditText;
     private EditText bodyEditText;
-    private TextView dateTargetTextView;
-    private TextView timeTargetTextView;
+    private DateTimeTextView dateTimeTextView;
     private CheckBox completedCheckBox;
     private View timePickerButton;
     private View dateLayout;
@@ -45,8 +43,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
     private void initControls() {
         nameEditText = (EditText) findViewById(R.id.nameEditText);
         bodyEditText = (EditText) findViewById(R.id.bodyEditText);
-        dateTargetTextView = (TextView) findViewById(R.id.dateTargetTextView);
-        timeTargetTextView = (TextView) findViewById(R.id.timeTargetTextView);
+        dateTimeTextView = (DateTimeTextView) findViewById(R.id.dateTimeTextView);
         completedCheckBox = ((CheckBox) findViewById(R.id.completedCheckBox));
         timePickerButton = findViewById(R.id.timePickerButton);
         dateLayout = findViewById(R.id.dateLayout);
@@ -54,10 +51,9 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
 
     private void setClickListeners() {
         findViewById(R.id.fab).setOnClickListener(this);
-        dateTargetTextView.setOnClickListener(this);
         findViewById(R.id.calendarButton).setOnClickListener(this);
-        timeTargetTextView.setOnClickListener(this);
         timePickerButton.setOnClickListener(this);
+        dateTimeTextView.setOnClickListener(this);
     }
 
     private void getIntentData() {
@@ -70,31 +66,17 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
         nameEditText.setText(note.getName());
         bodyEditText.setText(note.getBody());
         completedCheckBox.setChecked(note.isCompleted());
-        setDateTarget();
-        setTimeTarget();
+        setDateTimeTarget();
     }
 
-    private void setDateTarget() {
+    private void setDateTimeTarget() {
         final long dateTarget = note.getDateTarget();
         final boolean isDateEmpty = (dateTarget == Note.DEFAULT_DATE_TARGET);
         if (!isDateEmpty) {
-            dateTargetTextView.setText(DateTimeUtil.getDateTextString(dateTarget));
+            dateTimeTextView.setTarget(note.getTimeTarget(), dateTarget);
         }
         timePickerButton.setVisibility(getVisibility(!isDateEmpty));
         dateLayout.setVisibility(getVisibility(!isDateEmpty));
-    }
-
-    private void setTimeTarget() {
-        switch (note.getTimeTarget()) {
-            case NONE:
-                timeTargetTextView.setText(null);
-                break;
-            case SINGLE:
-                timeTargetTextView.setText(DateTimeUtil.getTimeTextString(note.getDateTarget()));
-                break;
-            default:
-                Log.e(TAG, "Not implemented yet: " + note.getTimeTarget());
-        }
     }
 
     private int getVisibility(boolean visible) {
@@ -108,11 +90,11 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 sendResult();
                 break;
             case R.id.calendarButton:
-            case R.id.dateTargetTextView:
+            case DateTimeTextView.dateTextViewId:
                 startDateSelectDialog();
                 break;
             case R.id.timePickerButton:
-            case R.id.timeTargetTextView:
+            case DateTimeTextView.timeTextViewId:
                 startTimeSelectDialog();
                 break;
             default:
@@ -140,7 +122,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 } else {
                     note.setDateTarget(Note.DEFAULT_DATE_TARGET);
                 }
-                setDateTarget();
+                setDateTimeTarget();
             }
         });
         dateDialogFragment.show(getFragmentManager(), "Date");
@@ -165,7 +147,7 @@ public class EditorActivity extends AppCompatActivity implements View.OnClickLis
                 } else {
                     note.setTimeTarget(Note.TimeTarget.NONE);
                 }
-                setTimeTarget();
+                setDateTimeTarget();
             }
         });
         timeDialogFragment.show(getFragmentManager(), "Time");

@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.vudn.kit.organizer.R;
 import com.vudn.kit.organizer.util.DateTimeUtil;
+import com.vudn.kit.organizer.view.DateTimeTextView;
 
 import java.util.ArrayList;
 
@@ -99,17 +100,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     private void setDateTarget(ViewHolder holder, long dateTarget, Note.TimeTarget timeTarget) {
         final boolean isDateEmpty = (dateTarget == Note.DEFAULT_DATE_TARGET);
         if (!isDateEmpty) {
-            final String dateString;
-            switch (timeTarget) {
-                case SINGLE:
-                    dateString = DateTimeUtil.getDateTimeTextString(dateTarget);
-                    break;
-                default:
-                    dateString = DateTimeUtil.getDateTextString(dateTarget);
-            }
-            holder.dateTargetTextView.setText(dateString);
+            holder.dateTimeTextView.setTarget(timeTarget, dateTarget);
         }
-        holder.dateTargetTextView.setVisibility(getVisibility(isDateEmpty));
+        holder.dateTimeTextView.setVisibility(getVisibility(isDateEmpty));
     }
 
     private int getVisibility(boolean isEmpty) {
@@ -119,7 +112,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     private void setCompletedState(ViewHolder holder, boolean completed) {
         holder.nameTextView.setTextColor(getCompletedStateColor(completed));
         holder.bodyTextView.setTextColor(getCompletedStateColor(completed));
-        holder.dateTargetTextView.setTextColor(getCompletedStateColor(completed));
+        holder.dateTimeTextView.setTextColor(getCompletedStateColor(completed));
         holder.completedCheckBox.setChecked(completed);
     }
 
@@ -201,7 +194,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         private final CardView cardView;
         private final TextView nameTextView;
         private final TextView bodyTextView;
-        private final TextView dateTargetTextView;
+        private final DateTimeTextView dateTimeTextView;
         private final CompoundButton completedCheckBox;
         private final View expandedContent;
         private final View editImageView;
@@ -212,7 +205,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             mainLayout = view.findViewById(R.id.cardContent);
             nameTextView = view.findViewById(R.id.nameTextView);
             bodyTextView = view.findViewById(R.id.bodyTextView);
-            dateTargetTextView = view.findViewById(R.id.dateTargetTextView);
+            dateTimeTextView = view.findViewById(R.id.dateTimeTextView);
             completedCheckBox = view.findViewById(R.id.completedCheckbox);
             expandedContent = view.findViewById(R.id.expandedContentLayout);
             editImageView = view.findViewById(R.id.editImageView);

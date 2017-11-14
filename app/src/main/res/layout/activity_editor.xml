@@ -55,16 +55,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/bodyInputLayout">
 
-        <TextView
-            android:id="@+id/dateTargetTextView"
+        <com.vudn.kit.organizer.view.DateTimeTextView
+            android:id="@+id/dateTimeTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
-
-        <TextView
-            android:id="@+id/timeTargetTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp" />
 
     </LinearLayout>
 

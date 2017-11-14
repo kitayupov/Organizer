@@ -16,11 +16,6 @@ public class DateTimeUtil {
         return timeFormat.format(new Date(date));
     }
 
-    public static String getDateTimeString(long date) {
-        return getDateString(date) + "\t" + getTimeString(date);
-    }
-
-
     public static String getDateTextString(long date) {
         return "Date: " + getDateString(date);
     }
