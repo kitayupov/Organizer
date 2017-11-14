@@ -23,8 +23,4 @@ public class DateTimeUtil {
     public static String getTimeTextString(long date) {
         return "Time: " + getTimeString(date);
     }
-
-    public static String getDateTimeTextString(long date) {
-        return getDateTextString(date) + "\t" + getTimeTextString(date);
-    }
 }
